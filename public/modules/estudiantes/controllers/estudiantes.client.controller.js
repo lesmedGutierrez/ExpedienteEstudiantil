@@ -32,6 +32,10 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
         $scope.selected_vacunas = [];
         $scope.anno_ingreso = 0;
 
+        $scope.optionsYearRange = Utility.generateListOfYears();
+        //var attendedStartDate;
+        $scope.anno_ingreso = $scope.optionsYearRange[$scope.optionsYearRange.length-1];
+
 
         $scope.provincia_change = function () {
             $scope.canton = $scope.provincia.cantones[0];
@@ -63,15 +67,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 $scope.selected_vacunas = $files;
         };
 
-        $scope.$watch('anno_ingreso', function () {
-            if ($scope.anno_ingreso > new Date().getFullYear()) {
 
-                $scope.anno_ingreso_error_mayor_actual = true;
-            } else {
-                $scope.anno_ingreso_error_mayor_actual = false;
-            }
-
-        });
         // Create new Estudiante
         $scope.create = function () {
             //Uploads photo
@@ -98,12 +94,12 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                  admitido = 1;
                  }*/
 
-                if ($scope.anno_ingreso > new Date().getFullYear()) {
+                /*if ($scope.anno_ingreso > new Date().getFullYear()) {
 
                     $scope.anno_ingreso_error = true
 
                     return
-                }
+                }*/
                 admitido = $scope.anno_ingreso
                 var estudiante = new Estudiantes({
                     name: $scope.name,
@@ -122,7 +118,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                     direccion_exacta: $scope.direccion_exacta,
                     admitido: admitido,
                     foto: $scope.foto,
-                    anno_ingreso: $scope.anno_ingreso,
+                    anno_ingreso: $scope.anno_ingreso.year,
                     colegio_procedencia: $scope.colegio_procedencia,
                     adecuacion_sig: $scope.adecuacion_sig,
                     adecuacion_nsig: $scope.adecuacion_nsig,
@@ -440,10 +436,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 }
             }
         };
-        $scope.optionsYearRange = Utility.generateListOfYears();
 
-        var attendedStartDate;
-        attendedStartDate = $scope.optionsYearRange[$scope.optionsYearRange.length-1];
 
         //Notas de los cursos
         $scope.initNotas = function(){

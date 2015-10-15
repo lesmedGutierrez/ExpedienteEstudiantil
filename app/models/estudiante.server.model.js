@@ -96,7 +96,8 @@ var EstudianteSchema = new Schema({
     },
     anno_ingreso: {
         type: Number,
-        trim: true
+        trim: true,
+        required: 'Año de ingreso al Colegio científico'
     },
     graduado: {
         type: Boolean,

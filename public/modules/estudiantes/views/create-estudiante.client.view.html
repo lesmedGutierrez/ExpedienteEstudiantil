@@ -115,6 +115,12 @@
                                 <label class="control-label" for="name" >El año no puede ser mayor que el año actual</label>
                             </div>
                         </div>
+                        <div class="controls">
+                            <select class="form-control align-field" data-ng-model="attendedStartDate" id="attendedstartdate"
+                                    ng-options="year as year.year for year in optionsYearRange" required>
+                                <option selected="selected">3</option>
+                            </select>
+                        </div>
                     </span>
                     <span class="form-group col-xs-6 no-margin-bottom">
                         <label class="control-label" for="name">Graduado</label>

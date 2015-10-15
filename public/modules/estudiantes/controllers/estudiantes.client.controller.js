@@ -1,13 +1,13 @@
 'use strict';
 
 // Estudiantes controller
-angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$stateParams', '$location', '$filter', '$http', '$sce', 'Authentication', 'Estudiantes', '$upload', 'Notas', 'GetNotas', 'GetAdmitidos', 'Decimo', 'Undecimo', 'Nacionalidad', 'Reports',
-	function($scope, $stateParams, $location, $filter, $http, $sce, Authentication, Estudiantes, $upload, Notas, GetNotas, GetAdmitidos, Decimo, Undecimo, Nacionalidad, Reports) {
-		$scope.authentication = Authentication;
-        $scope.options = $http.get('codigo-postal.json').then(function(data){
+angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$stateParams', '$location', '$filter', '$http', '$sce', 'Authentication', 'Estudiantes', '$upload', 'Notas', 'GetNotas', 'GetAdmitidos', 'Decimo', 'Undecimo', 'Nacionalidad', 'Reports','Utility',
+	function($scope, $stateParams, $location, $filter, $http, $sce, Authentication, Estudiantes, $upload, Notas, GetNotas, GetAdmitidos, Decimo, Undecimo, Nacionalidad, Reports, Utility) {
+        $scope.authentication = Authentication;
+        $scope.options = $http.get('codigo-postal.json').then(function (data) {
             $scope.options = data.data;
             $scope.provincia = $scope.options[0];
-            $scope.canton =  $scope.provincia.cantones[0];
+            $scope.canton = $scope.provincia.cantones[0];
             $scope.distrito = $scope.canton.distritos[0];
         });
         $scope.sexos = [{nombre: 'Masculino'}, {nombre: 'Femenino'}];
@@ -33,38 +33,37 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
         $scope.anno_ingreso = 0;
 
 
-
-        $scope.provincia_change = function() {
-            $scope.canton =  $scope.provincia.cantones[0];
+        $scope.provincia_change = function () {
+            $scope.canton = $scope.provincia.cantones[0];
             $scope.distrito = $scope.canton.distritos[0];
         };
 
-        $scope.canton_change = function(){
+        $scope.canton_change = function () {
             $scope.distrito = $scope.canton.distritos[0];
         };
 
         $scope.onFileSelect = function ($files) {
-            if($files !== [])
+            if ($files !== [])
                 $scope.selectedFile = $files;
         };
         $scope.on_select_cer_nacimiento = function ($files) {
-            if($files !== [])
+            if ($files !== [])
                 $scope.selected_certificacion_nacimiento = $files;
         };
         $scope.on_select_cer_notas = function ($files) {
-            if($files !== [])
+            if ($files !== [])
                 $scope.selected_certificacion_notas = $files;
         };
         $scope.on_select_infor_hogar = function ($files) {
-            if($files !== [])
+            if ($files !== [])
                 $scope.selected_inf_hogar = $files;
         };
         $scope.on_select_tarje_vacunas = function ($files) {
-            if($files !== [])
+            if ($files !== [])
                 $scope.selected_vacunas = $files;
         };
 
-        $scope.$watch('anno_ingreso',function() {
+        $scope.$watch('anno_ingreso', function () {
             if ($scope.anno_ingreso > new Date().getFullYear()) {
 
                 $scope.anno_ingreso_error_mayor_actual = true;
@@ -73,43 +72,40 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             }
 
         });
-
-
-
-		// Create new Estudiante
-		$scope.create = function() {
+        // Create new Estudiante
+        $scope.create = function () {
             //Uploads photo
-             var file = $scope.selectedFile[0];
-                $scope.upload = $upload.upload({
-                    url: '/upload',
-                    method: 'POST',
-                    file: file
-                }).success(function(data) {
-                    $scope.foto = data.name;
-                    insertarEstudiante();
-                });
+            var file = $scope.selectedFile[0];
+            $scope.upload = $upload.upload({
+                url: '/upload',
+                method: 'POST',
+                file: file
+            }).success(function (data) {
+                $scope.foto = data.name;
+                insertarEstudiante();
+            });
 
-            function insertarEstudiante(){
+            function insertarEstudiante() {
                 // Create new Estudiante object
                 //var graduado
                 var graduado = 0;
                 /*if($scope.anno_ingreso < new Date().getFullYear()-1){
-                    gr = 1;
-                }*/
+                 gr = 1;
+                 }*/
                 graduado = $scope.graduado
                 var admitido = 0;
                 /*if($scope.anno_ingreso < new Date().getFullYear()){
-                    admitido = 1;
-                }*/
+                 admitido = 1;
+                 }*/
 
-                if ($scope.anno_ingreso>new Date().getFullYear()) {
+                if ($scope.anno_ingreso > new Date().getFullYear()) {
 
                     $scope.anno_ingreso_error = true
 
                     return
                 }
                 admitido = $scope.anno_ingreso
-                var estudiante = new Estudiantes ({
+                var estudiante = new Estudiantes({
                     name: $scope.name,
                     primer_apellido: $scope.primer_apellido,
                     segundo_apellido: $scope.segundo_apellido,
@@ -135,63 +131,61 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
 
 
                 // Redirect after save
-                estudiante.$save(function(response) {
+                estudiante.$save(function (response) {
 
-                    for(var i = 0; i < $scope.notas_septimo.length; i++) {
+                    for (var i = 0; i < $scope.notas_septimo.length; i++) {
 
 
-
-                        var notaS = new Notas ({
+                        var notaS = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'septimo',
                             curso: $scope.notas_septimo[i].curso,
                             nota: $scope.notas_septimo[i].nota,
-                            anno: estudiante.anno_ingreso-3,
+                            anno: estudiante.anno_ingreso - 3,
                             semestre: 0
                         });
 
 
-                        var notaO = new Notas ({
+                        var notaO = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'octavo',
                             curso: $scope.notas_octavo[i].curso,
                             nota: $scope.notas_octavo[i].nota,
-                            anno: estudiante.anno_ingreso-2,
+                            anno: estudiante.anno_ingreso - 2,
                             semestre: 0
                         });
 
-                        var notaN = new Notas ({
+                        var notaN = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'noveno',
                             curso: $scope.notas_noveno[i].curso,
                             nota: $scope.notas_noveno[i].nota,
-                            anno: estudiante.anno_ingreso-1,
+                            anno: estudiante.anno_ingreso - 1,
                             semestre: 0
                         });
 
 
-                        notaS.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaS.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
 
 
-                        notaO.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaO.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
 
 
-                        notaN.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaN.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
-
 
 
                     }
-                    for(var j = 0; j < $scope.notas_decimo_1.length; j++) {
-                        var notaD1 = new Notas ({
+                    for (var j = 0; j < $scope.notas_decimo_1.length; j++) {
+                        var notaD1 = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'decimo',
                             curso: $scope.notas_decimo_1[j].curso,
@@ -199,7 +193,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             anno: estudiante.anno_ingreso,
                             semestre: 1
                         });
-                        var notaD2 = new Notas ({
+                        var notaD2 = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'decimo',
                             curso: $scope.notas_decimo_2[j].curso,
@@ -207,7 +201,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             anno: estudiante.anno_ingreso,
                             semestre: 2
                         });
-                        var notaU1 = new Notas ({
+                        var notaU1 = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'undecimo',
                             curso: $scope.notas_undecimo_1[j].curso,
@@ -215,7 +209,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             anno: estudiante.anno_ingreso + 1,
                             semestre: 1
                         });
-                        var notaU2 = new Notas ({
+                        var notaU2 = new Notas({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'undecimo',
                             curso: $scope.notas_undecimo_2[j].curso,
@@ -223,152 +217,152 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             anno: estudiante.anno_ingreso + 1,
                             semestre: 2
                         });
-                        notaD1.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaD1.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
-                        notaD2.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaD2.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
-                        notaU1.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaU1.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
-                        notaU2.$save(function(response) {
-                        }, function(errorResponse) {
+                        notaU2.$save(function (response) {
+                        }, function (errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
                     }
                     $location.path('estudiantes/' + response._id);
                     // Clear form fields
-                }, function(errorResponse) {
+                }, function (errorResponse) {
                     $scope.error = errorResponse.data.message;
 
                 });
             }
-		};
+        };
 
-		// Remove existing Estudiante
-		$scope.remove = function(estudiante) {
-			if ( estudiante ) {
-				estudiante.$remove();
-				for (var i in $scope.estudiantes) {
-					if ($scope.estudiantes [i] === estudiante) {
-						$scope.estudiantes.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.estudiante.$remove(function() {
-					$location.path('estudiantes');
-				});
+        // Remove existing Estudiante
+        $scope.remove = function (estudiante) {
+            if (estudiante) {
+                estudiante.$remove();
+                for (var i in $scope.estudiantes) {
+                    if ($scope.estudiantes [i] === estudiante) {
+                        $scope.estudiantes.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.estudiante.$remove(function () {
+                    $location.path('estudiantes');
+                });
                 var notas = $scope.notas;
                 angular.forEach(notas, function (nota) {
-                    Notas.remove({ notaId: nota._id }, nota);
+                    Notas.remove({notaId: nota._id}, nota);
                 });
-			}
-		};
+            }
+        };
 
-		// Update existing Estudiante
-		$scope.update = function() {
+        // Update existing Estudiante
+        $scope.update = function () {
             var file = $scope.selectedFile[0];
             $scope.upload = $upload.upload({
                 url: '/upload',
                 method: 'POST',
                 file: file
-            }).success(function(data) {
+            }).success(function (data) {
                 $scope.foto = data.name;
                 $scope.updateEstudiantes();
             });
-		};
+        };
 
-        $scope.updateEstudiantes = function() {
+        $scope.updateEstudiantes = function () {
             var estudiante = $scope.estudiante;
             estudiante.foto = $scope.foto;
-            if($scope.sexo.nombre === 'Masculino'){
+            if ($scope.sexo.nombre === 'Masculino') {
                 estudiante.sexo = true;
             }
-            else{
+            else {
                 estudiante.sexo = false;
             }
-            if($scope.adSignificativa.nombre === 'Tiene'){
+            if ($scope.adSignificativa.nombre === 'Tiene') {
                 estudiante.adSignificativa = true;
             }
-            else{
+            else {
                 estudiante.adSignificativa = false;
             }
-            if($scope.adNoSignificativa.nombre === 'Tiene'){
+            if ($scope.adNoSignificativa.nombre === 'Tiene') {
                 estudiante.adNoSignificativa = true;
             }
-            else{
+            else {
                 estudiante.adNoSignificativa = false;
             }
             estudiante.provincia = $scope.provincia.nombre;
             estudiante.canton = $scope.canton.nombre;
             estudiante.distrito = $scope.distrito.nombre;
-            estudiante.$update(function() {
+            estudiante.$update(function () {
                 $location.path('estudiantes/' + estudiante._id);
-            }, function(errorResponse) {
+            }, function (errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
             var notas = $scope.notas;
             angular.forEach(notas, function (nota) {
-                for(var i = 0;i < $scope.notas_septimo.length; i++){
-                    if(($scope.notas_septimo.grado===nota.grado)&&($scope.notas_septimo.curso===nota.curso)){
+                for (var i = 0; i < $scope.notas_septimo.length; i++) {
+                    if (($scope.notas_septimo.grado === nota.grado) && ($scope.notas_septimo.curso === nota.curso)) {
                         nota.nota = $scope.notas_septimo.nota;
                     }
-                    else if(($scope.notas_octavo.grado===nota.grado)&&($scope.notas_octavo.curso===nota.curso)){
+                    else if (($scope.notas_octavo.grado === nota.grado) && ($scope.notas_octavo.curso === nota.curso)) {
                         nota.nota = $scope.notas_octavo.nota;
                     }
-                    else if(($scope.notas_noveno.grado===nota.grado)&&($scope.notas_noveno.curso===nota.curso)){
+                    else if (($scope.notas_noveno.grado === nota.grado) && ($scope.notas_noveno.curso === nota.curso)) {
                         nota.nota = $scope.notas_noveno.nota;
                     }
                 }
-                Notas.update({ notaId: nota._id }, nota);
+                Notas.update({notaId: nota._id}, nota);
             });
         };
 
         $scope.estudiantes = [];
-		// Find a list of Estudiantes/Cuando el parametro viene en true es para los estudiantes matriculados
-		$scope.find = function(matriculado) {
-			$scope.estudiantes = Estudiantes.query();
+        // Find a list of Estudiantes/Cuando el parametro viene en true es para los estudiantes matriculados
+        $scope.find = function (matriculado) {
+            $scope.estudiantes = Estudiantes.query();
             $scope.ngGridEstudiantes(matriculado);
-		};
+        };
 
-        $scope.admitidos = function(admitido) {
+        $scope.admitidos = function (admitido) {
             console.log(admitido);
             $scope.estudiantes = GetAdmitidos.query({admitido: admitido});
             console.log($scope.estudiantes);
             $scope.ngGridEstudiantes(admitido);
         };
 
-		// Find existing Estudiante
-		$scope.findOne = function(edit) {
+        // Find existing Estudiante
+        $scope.findOne = function (edit) {
             $scope.estudiante = Estudiantes.get({
                 estudianteId: $stateParams.estudianteId
             });
             $scope.notas_septimo = [];
-            $scope.notas_octavo =[];
+            $scope.notas_octavo = [];
             $scope.notas_noveno = [];
             $scope.editable = edit;
-            $scope.estudiante.$promise.then(function(estudiante) {
+            $scope.estudiante.$promise.then(function (estudiante) {
                 $scope.sexo = $scope.sexos[$scope.find($scope.sexos, $scope.estudiante.sexo, 0)];
-                if(edit){
+                if (edit) {
 
-                    if($scope.adecuaciones[0].nombre === $scope.estudiante.adecuacion_sig){
+                    if ($scope.adecuaciones[0].nombre === $scope.estudiante.adecuacion_sig) {
                         $scope.adSignificativa = $scope.adecuaciones[0];
                     }
-                    else{
+                    else {
                         $scope.adSignificativa = $scope.adecuaciones[1];
                     }
-                    if($scope.adecuaciones[0].nombre === $scope.estudiante.adecuacion_nsig){
+                    if ($scope.adecuaciones[0].nombre === $scope.estudiante.adecuacion_nsig) {
                         $scope.adNoSignificativa = $scope.adecuaciones[0];
                     }
-                    else{
+                    else {
                         $scope.adNoSignificativa = $scope.adecuaciones[1];
                     }
 
-                    var arr = $scope.findprovincia($scope.estudiante.provincia,$scope.estudiante.canton,$scope.estudiante.distrito);
+                    var arr = $scope.findprovincia($scope.estudiante.provincia, $scope.estudiante.canton, $scope.estudiante.distrito);
                     $scope.provincia = $scope.options[arr[0]];
                     $scope.canton = $scope.options[arr[0]].cantones[arr[1]];
                     $scope.distrito = $scope.options[arr[0]].cantones[arr[1]].distritos[arr[2]];
@@ -377,64 +371,64 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 $scope.notas = GetNotas.query({
                     cedula_estudiante: estudiante.nacionalidad
                 });
-                $scope.notas.$promise.then(function(notas) {
+                $scope.notas.$promise.then(function (notas) {
                     angular.forEach(notas, function (nota) {
-                        if(nota.grado==='septimo'){
+                        if (nota.grado === 'septimo') {
                             $scope.notas_septimo.push(nota);
                         }
-                        else if(nota.grado==='octavo'){
+                        else if (nota.grado === 'octavo') {
                             $scope.notas_octavo.push(nota);
                         }
-                        else if(nota.grado==='noveno'){
+                        else if (nota.grado === 'noveno') {
                             $scope.notas_noveno.push(nota);
                         }
                     });
-                }, function(error) {
+                }, function (error) {
                     console.log('Failed: ' + error);
                 });
-            }, function(error) {
+            }, function (error) {
                 console.log('Failed: ' + error);
             });
             $scope.initGridOptions();
-		};
+        };
 
-        $scope.find = function(arr, obj, val){
+        $scope.find = function (arr, obj, val) {
             var com = '';
-            if(val === 0){
-                if(obj){
+            if (val === 0) {
+                if (obj) {
                     com = 'Masculino';
                 }
-                else{
+                else {
                     com = 'Femenino';
                 }
             }
-            else if(val === 1){
-                if(obj){
+            else if (val === 1) {
+                if (obj) {
                     com = 'Tiene';
                 }
-                else{
+                else {
                     com = 'No Tiene';
                 }
             }
-            for(var i = 0;i < arr.length; i++){
-                if(arr[i].nombre===com){
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i].nombre === com) {
                     return i;
                 }
             }
         };
 
-        $scope.findprovincia = function(prov, can, dis){
+        $scope.findprovincia = function (prov, can, dis) {
             var retorno = [];
             var arr = $scope.options;
             var i = 0;
-            for(i;i<arr.length;i++){
-                if(arr[i].nombre === prov){
+            for (i; i < arr.length; i++) {
+                if (arr[i].nombre === prov) {
                     var j = 0;
-                    for(j;j<arr[i].cantones.length;j++){
-                        if(arr[i].cantones[j].nombre === can){
+                    for (j; j < arr[i].cantones.length; j++) {
+                        if (arr[i].cantones[j].nombre === can) {
                             var g = 0;
-                            for(g;g<arr[i].cantones[j].distritos.length;g++){
-                                if(arr[i].cantones[j].distritos[g].nombre === dis){
+                            for (g; g < arr[i].cantones[j].distritos.length; g++) {
+                                if (arr[i].cantones[j].distritos[g].nombre === dis) {
                                     retorno.push(i);
                                     retorno.push(j);
                                     retorno.push(g);
@@ -446,6 +440,10 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 }
             }
         };
+        $scope.optionsYearRange = Utility.generateListOfYears();
+
+        var attendedStartDate;
+        attendedStartDate = $scope.optionsYearRange[$scope.optionsYearRange.length-1];
 
         //Notas de los cursos
         $scope.initNotas = function(){

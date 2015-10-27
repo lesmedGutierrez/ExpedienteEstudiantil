@@ -285,6 +285,14 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             estudiante.provincia = $scope.provincia.nombre;
             estudiante.canton = $scope.canton.nombre;
             estudiante.distrito = $scope.distrito.nombre;
+
+
+
+            $scope.optionsYearRange = Utility.generateListOfYears();
+            $scope.anno_ingreso = $scope.optionsYearRange[$scope.optionsYearRange.length-1];
+
+            estudiante.anno_ingreso = $scope.anno_ingreso;
+
             estudiante.$update(function() {
                 $location.path('estudiantes/' + estudiante._id);
             }, function(errorResponse) {

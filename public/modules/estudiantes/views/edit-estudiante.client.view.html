@@ -97,6 +97,15 @@
                     <div class="controls">
                         <input type="text" data-ng-model="estudiante.colegio_procedencia" id="colegio_procedencia" class="form-control align-field" placeholder="Colegio de procedencia" required>
                     </div>
+                    <label class="control-label" for="name">Año de Ingreso al Colegio Científico</label>
+                    <div class="controls">
+                        <div class="controls">
+                            <select class="form-control align-field" data-ng-model="anno_ingreso" id="anno_ingreso_combo"
+                                    ng-options="year as year.year for year in optionsYearRange" required>
+                                <option selected="selected">3</option>
+                            </select>
+                        </div>
+                    </div>
                     <label class="control-label" for="name">Adecuación significativa</label>
                     <div class="controls">
                         <select class="form-control align-field" data-ng-model="adSignificativa" id="adecuacion_significativa"

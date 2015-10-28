@@ -7,6 +7,71 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 	function($scope, $stateParams, $location, Authentication, Functionaries, Utility, $modal, $log) {
 		$scope.authentication = Authentication;
 
+
+
+
+		$scope.animationsEnabled = true;
+
+		//Open a modal window to Add a single education to the resume.
+		$scope.modalAddEducation = function (size, selectedFunctionary) {
+
+			console.log ( '#someButton was clicked' );
+
+			var modalInstance = $modal.open({
+				backgroundColor: 'white',
+				animation: $scope.animationsEnabled,
+				templateUrl: 'modules/functionary-resume-educations/views/create-functionary-resume-education.client.view.html',
+				size: size,
+				controller: function($scope, $modalInstance, functionary){
+					$scope.functionary = functionary
+				},
+
+				resolve: {
+					functionary: function () {
+						return selectedFunctionary;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+			}, function () {
+				$log.info('Modal dismissed at: ' + new Date());
+			});
+		};
+
+
+		$scope.modalAddWorkExperience = function (size, selectedFunctionary) {
+
+			console.log ( '#someButton was clicked' );
+
+			var modalInstance = $modal.open({
+				backgroundColor: 'white',
+				animation: $scope.animationsEnabled,
+				templateUrl: 'modules/functionary-resume-experiences/views/create-functionary-resume-experience.client.view.html',
+				size: size,
+				controller: function($scope, $modalInstance, functionary){
+					$scope.functionary = functionary
+				},
+
+				resolve: {
+					functionary: function () {
+						return selectedFunctionary;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+			}, function () {
+				$log.info('Modal dismissed at: ' + new Date());
+			});
+		};
+
+		$scope.toggleAnimation = function () {
+			$scope.animationsEnabled = !$scope.animationsEnabled;
+		};
+
 		// Create new Functionary
 		$scope.create = function() {
 			// Create new Functionary object

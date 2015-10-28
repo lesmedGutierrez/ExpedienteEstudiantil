@@ -1,8 +1,10 @@
 <section data-ng-controller="FunctionariesController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1 data-ng-bind="functionary.name"></h1>
+		<h3 data-ng-bind="functionary.name"></h3>
 	</div>
 	<h2>{{functionary.firstName}} {{functionary.firstSurname}} {{functionary.secondSurname}}</h2>
+	<h3>{{'Funcionario: '+ functionary.role}}</h3>
+	<h4>{{functionary.status}}</h4>
 	<div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == functionary.user._id))">
 		<a class="btn btn-primary" href="/#!/functionaries/{{functionary._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
@@ -11,12 +13,45 @@
 			<i class="glyphicon glyphicon-trash"></i>
 		</a>
 	</div>
-	<small>
-		<em class="text-muted">
-			Publicado en
-			<span data-ng-bind="functionary.created | date:'mediumDate'"></span>
-			por
-			<span data-ng-bind="functionary.user.displayName"></span>
-		</em>
-	</small>
+
+	<div class="row">
+
+		<div class="col-md-4">
+			<br/>
+			<br/>
+			<h4>
+				<h4 class="list-group-item-heading">{{'Cédula: '+functionary.identification}}</h4>
+				<h4 class="list-group-item-heading">{{'Fecha de nacimiento:' + (functionary.birthdate | date:'shortDate')}}</h4>
+				<h4 class="list-group-item-heading">{{'Teléfono: '+functionary.phoneNumber}}</h4>
+				<h4 class="list-group-item-heading">{{'Celular: '+functionary.cellphoneNumber}}</h4>
+				<h4 class="list-group-item-heading">{{'Correo: '+functionary.email}}</h4>
+			</h4>
+		</div>
+
+		<div class="col-md-4">
+			<br/>
+			<br/>
+			<h4>
+				<h4 class="list-group-item-heading">{{'Estado civil: '+functionary.maritalStatus}}</h4>
+				<h4 class="list-group-item-heading">{{'Direccion: '+functionary.address}}</h4>
+			</h4>
+		</div>
+
+	</div>
+
+	<div class="row">
+
+		<div class="form-group">
+			<button ng-click="modalAddEducation('lg', functionary)" class="btn btn-primary align-field"> Agregar educación</button>
+		</div>
+
+		<div class="form-group">
+			<button ng-click="modalAddWorkExperience('lg', functionary)" class="btn btn-primary align-field"> Agregar experiencia</button>
+		</div>
+
+
+	</div>
+
+
+
 </section>

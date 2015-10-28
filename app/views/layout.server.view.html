@@ -35,7 +35,6 @@
 	<!-- Fav Icon -->
 	<link href="/modules/core/img/brand/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
-
 	<!--Application CSS Files-->
 	{% for cssFile in cssFiles %}<link rel="stylesheet" href="{{cssFile}}">{% endfor %}
 
@@ -54,12 +53,7 @@
 			{% block content %}{% endblock %}
 		</section>
 	</section>
-
-	<!--Embedding The User Object-->
-	<script type="text/javascript">
-		var user = {{ user | json | safe }};
-	</script>
-
+	
 	<!--Application JavaScript Files-->
 	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %} 
 

@@ -7,21 +7,21 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 
 		// Create new Functionary resume experience
 		$scope.create = function() {
+
+
 			// Create new Functionary resume experience object
 			var functionaryResumeExperience = new FunctionaryResumeExperiences ({
 				companyName: this.companyName,
 				functionaryTitle: this.functionaryTitle,
 				description: this.description,
-				attendedStartDate: this.startDate,
-				attendedEndDate: this.endDate
+				attendedStartDate: this.attendedStartDate.year,
+				attendedEndDate: this.attendedEndDate.year
 			});
-
 			// Redirect after save
 			functionaryResumeExperience.$save(function(response) {
 				$location.path('functionary-resume-experiences/' + response._id);
 
-				// Clear form fields
-
+				$scope.functionary.resume.experience.push(response);
 				$scope.companyName = '';
 				$scope.functionaryTitle = '';
 				$scope.description = '';
@@ -31,6 +31,14 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
+
+			var functionary = $scope.functionary;
+			console.log(functionary);
+			functionary.$update(function() {},
+				function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+
 		};
 
 		// Remove existing Functionary resume experience

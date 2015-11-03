@@ -43,7 +43,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 
 		$scope.modalAddWorkExperience = function (size, selectedFunctionary) {
 
-			console.log ( '#someButton was clicked' );
+
 
 			var modalInstance = $modal.open({
 				backgroundColor: 'white',
@@ -71,6 +71,51 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		$scope.toggleAnimation = function () {
 			$scope.animationsEnabled = !$scope.animationsEnabled;
 		};
+
+
+
+
+
+		// Create new Experience
+		$scope.create = function() {
+			// Create new Functionary object
+			var functionary = new Functionaries ({
+				w: this.firstName,
+				companyName: this.firstSurname,
+				secondSurname: this.secondSurname,
+				identification: this.identification,
+				birthdate: this.birthdate,
+				maritalStatus: this.maritalStatus.maritalStatus,
+				role: this.role.role,
+				address: this.address,
+				phoneNumber: this.phoneNumber,
+				cellphoneNumber: this.cellphoneNumber,
+				email: this.email,
+				hireDate: this.hireDate,
+				status: this.status.status
+			});
+
+			// Redirect after save
+			functionary.$save(function(response) {
+				$location.path('functionaries/' + response._id);
+				// Clear form fields
+				$scope.firstName  = '';
+				$scope.firstSurname = '';
+				$scope.secondSurname = '';
+				$scope.identification = '';
+				$scope.birthdate = '';
+				$scope.maritalStatus = '';
+				$scope.role = '';
+				$scope.phoneNumber = '';
+				$scope.cellphoneNumber = '';
+				$scope.email = '';
+				$scope.hireDate = '';
+				$scope.status = '';
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
 
 		// Create new Functionary
 		$scope.create = function() {
@@ -155,6 +200,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		$scope.findOne = function() {
 			$scope.functionary = Functionaries.get({ 
 				functionaryId: $stateParams.functionaryId
+
 			});
 		};
 

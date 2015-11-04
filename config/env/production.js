@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/expedienteestudiantil',
+	db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://172.24.28.21:27017/expedienteestudiantil-dev',
 	assets: {
 		lib: {
 			css: [

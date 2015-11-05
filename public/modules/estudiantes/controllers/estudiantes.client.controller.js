@@ -11,7 +11,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             $scope.canton =  $scope.provincia.cantones[0];
             $scope.distrito = $scope.canton.distritos[0];
         });
-
         $scope.sexos = [{nombre: 'Masculino'}, {nombre: 'Femenino'}];
         $scope.adecuaciones = [{nombre: 'Tiene'}, {nombre: 'No tiene'}];
         $scope.consultas = [{nombre: 'Nombre'}, {nombre: 'Cedula'}, {nombre: 'Colegio de Procedencia'}];
@@ -73,7 +72,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             } else {
                 $scope.anno_ingreso_error_mayor_actual = false;
             }
-
         });
 
 

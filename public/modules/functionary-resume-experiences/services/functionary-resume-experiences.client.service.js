@@ -11,6 +11,3 @@ angular.module('functionary-resume-experiences').factory('FunctionaryResumeExper
 		});
 	}
 ]);
-
-
-

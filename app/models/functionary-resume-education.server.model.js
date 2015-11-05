@@ -10,6 +10,10 @@ var mongoose = require('mongoose'),
  * Functionary resume education Schema
  */
 var FunctionaryResumeEducationSchema = new Schema({
+	functionary:{
+		type: Schema.ObjectId,
+		ref:'Functionary'
+	},
 
 	schoolName: {
 		type: String,

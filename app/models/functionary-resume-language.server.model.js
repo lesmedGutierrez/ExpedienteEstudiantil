@@ -10,6 +10,10 @@ var mongoose = require('mongoose'),
  * Functionary resume language Schema
  */
 var FunctionaryResumeLanguageSchema = new Schema({
+	functionary:{
+		type: Schema.ObjectId,
+		ref:'Functionary'
+	},
 
 	language: {
 		type: String,

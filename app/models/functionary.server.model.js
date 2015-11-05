@@ -79,18 +79,6 @@ var FunctionarySchema = new Schema({
 		trim: true
 	},
 
-
-	resume:{
-		summary:{
-			type: String,
-			default: '',
-			trim: true
-		},
-		experience:[{ type:Schema.ObjectId, ref:'FunctionaryResumeExperience'}],
-		education:[{type:Schema.ObjectId, ref:'FunctionaryResumeEducation'}],
-		language:[{ type:Schema.ObjectId, ref:'FunctionaryResumeLanguage'}]
-	},
-
 	email: {
 		type: String,
 		default: '',

@@ -1,44 +1,31 @@
 'use strict';
 
 // Functionary resume experiences controller
-angular.module('functionary-resume-experiences').controller('FunctionaryResumeExperiencesController', ['$scope', '$stateParams', '$location', 'Authentication', 'FunctionaryResumeExperiences', 'Utility',
-	function($scope, $stateParams, $location, Authentication, FunctionaryResumeExperiences, Utility) {
+angular.module('functionary-resume-experiences').controller('FunctionaryResumeExperiencesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries', 'FunctionaryResumeExperiences', 'Utility',
+	function($scope, $stateParams, $location, Authentication, Functionaries, FunctionaryResumeExperiences, Utility) {
 		$scope.authentication = Authentication;
 
 		// Create new Functionary resume experience
 		$scope.create = function() {
-
-
 			// Create new Functionary resume experience object
 			var functionaryResumeExperience = new FunctionaryResumeExperiences ({
+				functionary: this.functionary._id,
 				companyName: this.companyName,
 				functionaryTitle: this.functionaryTitle,
+				companyLocation: this.companyLocation,
 				description: this.description,
 				attendedStartDate: this.attendedStartDate.year,
 				attendedEndDate: this.attendedEndDate.year
 			});
 			// Redirect after save
 			functionaryResumeExperience.$save(function(response) {
-				$location.path('functionary-resume-experiences/' + response._id);
-
-				$scope.functionary.resume.experience.push(response);
 				$scope.companyName = '';
 				$scope.functionaryTitle = '';
+				$scope.companyLocation = '';
 				$scope.description = '';
-				$scope.attendedStartDate = '';
-				$scope.attendedEndDate = '';
-
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
-
-			var functionary = $scope.functionary;
-			console.log(functionary);
-			functionary.$update(function() {},
-				function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-
 		};
 
 		// Remove existing Functionary resume experience

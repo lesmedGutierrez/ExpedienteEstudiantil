@@ -12,3 +12,13 @@ angular.module('functionaries').factory('Functionaries', ['$resource',
 	}
 ]);
 
+angular.module('functionaries').factory('GetFunctionaryExperiences', ['$resource',
+	function($resource){
+		return $resource('functionary-resume-experiences/:functionaryResumeExperienceId', { functionaryResumeExperienceId: '@_id'
+		}, {
+			update: {
+				method: 'GET'
+			}
+		});
+	}
+]);

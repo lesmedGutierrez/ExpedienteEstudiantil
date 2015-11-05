@@ -5,7 +5,7 @@
 	<h2>{{functionary.firstName}} {{functionary.firstSurname}} {{functionary.secondSurname}}</h2>
 	<h3>{{'Funcionario: '+ functionary.role}}</h3>
 	<h4>{{functionary.status}}</h4>
-	<div class="pull-right" data-ng-show="((authentication.user) && (authentication.user._id == functionary.user._id))">
+	<div class="pull-right" data-ng-show="((authentication.user))">
 		<a class="btn btn-primary" href="/#!/functionaries/{{functionary._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
 		</a>
@@ -38,19 +38,30 @@
 		</div>
 
 	</div>
-
-	<div class="row">
-
+	<br/>
+	<div class="container">
 		<div class="form-group">
 			<button ng-click="modalAddEducation('lg', functionary)" class="btn btn-primary align-field"> Agregar educación</button>
+		</div>
+		<div ng-repeat="xp in experiences">
+			<div class="container">
+				<div class="jumbotron  container-border">
+					<h4>
+						<h4 class="list-group-item-heading">{{'Compañia: ' + xp.companyName}}</h4>
+						<h4 class="list-group-item-heading">{{'Ubicación de la compañia: ' + xp.companyLocation}}</h4>
+						<h4 class="list-group-item-heading">{{'Rol: ' + xp.functionaryTitle}}</h4>
+						<h4 class="list-group-item-heading">{{'Fecha: ' + xp.attendedStartDate + ' - ' + xp.attendedEndDate}}</h4>
+					</h4>
+				</div>
+			</div>
 		</div>
 
 		<div class="form-group">
 			<button ng-click="modalAddWorkExperience('lg', functionary)" class="btn btn-primary align-field"> Agregar experiencia</button>
 		</div>
-
-
 	</div>
+
+
 
 
 

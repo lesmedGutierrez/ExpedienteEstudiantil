@@ -10,4 +10,11 @@
 .checkbox-left{
     width: 10%;
     text-align: left;
-    }
+}
+
+.container-border{
+    border-radius: 1px;
+    background-color: whitesmoke;
+    border: 2px solid #D4D4D4;
+    margin-right: 180px;
+}

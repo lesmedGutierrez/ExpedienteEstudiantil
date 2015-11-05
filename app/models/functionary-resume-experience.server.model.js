@@ -10,6 +10,12 @@ var mongoose = require('mongoose'),
  * Functionary resume experience Schema
  */
 var FunctionaryResumeExperienceSchema = new Schema({
+
+	functionary:{
+		type: Schema.ObjectId,
+		ref:'Functionary'
+	},
+
 	companyName: {
 		type: String,
 		default: '',

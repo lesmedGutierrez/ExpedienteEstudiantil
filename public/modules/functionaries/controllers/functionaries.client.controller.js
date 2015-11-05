@@ -3,14 +3,12 @@
 // Functionaries controller
 
 
-angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries','Utility', '$modal', '$log',
-	function($scope, $stateParams, $location, Authentication, Functionaries, Utility, $modal, $log) {
+angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries', 'GetFunctionaryExperiences','Utility', '$modal', '$log',
+	function($scope, $stateParams, $location, Authentication, Functionaries, GetFunctionaryExperiences, Utility, $modal, $log) {
 		$scope.authentication = Authentication;
 
-
-
-
 		$scope.animationsEnabled = true;
+		$scope.experience = [];
 
 		//Open a modal window to Add a single education to the resume.
 		$scope.modalAddEducation = function (size, selectedFunctionary) {
@@ -42,9 +40,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 
 
 		$scope.modalAddWorkExperience = function (size, selectedFunctionary) {
-
-
-
+			$scope.update();
 			var modalInstance = $modal.open({
 				backgroundColor: 'white',
 				animation: $scope.animationsEnabled,
@@ -71,9 +67,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		$scope.toggleAnimation = function () {
 			$scope.animationsEnabled = !$scope.animationsEnabled;
 		};
-
-
-
 
 
 		// Create new Experience
@@ -167,8 +160,8 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		// Remove existing Functionary
 		$scope.remove = function(event,functionary) {
 			if ( functionary ) {
-				event.preventDefault()
-				event.stopPropagation()
+				event.preventDefault();
+				event.stopPropagation();
 				functionary.$remove();
 				for (var i in $scope.functionaries) {
 					if ($scope.functionaries [i] === functionary) {
@@ -183,12 +176,16 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		// Update existing Functionary
 		$scope.update = function() {
 			var functionary = $scope.functionary;
-
+			console.log(functionary);
 			functionary.$update(function() {
 				$location.path('functionaries/' + functionary._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
+		};
+
+		$scope.getFunctionaryExperience = function () {
+			$scope.experiences = GetFunctionaryExperiences.query({ functionaryId : $scope.functionary._id });
 		};
 
 		// Find a list of Functionaries
@@ -200,12 +197,13 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		$scope.findOne = function() {
 			$scope.functionary = Functionaries.get({ 
 				functionaryId: $stateParams.functionaryId
-
+			});
+			$scope.getFunctionaryExperience();
+			$scope.experiences.$promise.then(function(xp){
+				for(var i=0; i<$scope.experiences.length; i++){
+					console.log($scope.experiences[i]);
+				}
 			});
 		};
-
-
-
-
 	}
 ]);

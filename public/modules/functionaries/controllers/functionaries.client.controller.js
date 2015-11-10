@@ -73,8 +73,8 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		$scope.create = function() {
 			// Create new Functionary object
 			var functionary = new Functionaries ({
-				w: this.firstName,
-				companyName: this.firstSurname,
+				firstName: this.firstName,
+				firstSurName: this.firstSurname,
 				secondSurname: this.secondSurname,
 				identification: this.identification,
 				birthdate: this.birthdate,
@@ -176,7 +176,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		// Update existing Functionary
 		$scope.update = function() {
 			var functionary = $scope.functionary;
-			console.log(functionary);
 			functionary.$update(function() {
 				$location.path('functionaries/' + functionary._id);
 			}, function(errorResponse) {
@@ -185,7 +184,24 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		};
 
 		$scope.getFunctionaryExperience = function () {
-			$scope.experiences = GetFunctionaryExperiences.query({ functionaryId : $scope.functionary._id });
+			$scope.experiences = GetFunctionaryExperiences.query({ functionary: $scope.functionary._id });
+			$scope.experiences.$promise.then(function(experiences) {
+				var result = [];
+				experiences.forEach(function (experience) {
+					if (experience.functionary === $scope.functionary._id) {
+						result.push(experience);
+					}
+				});
+				$scope.experiences = result;
+			});
+		};
+
+		$scope.setStatusCombo = function () {
+			$scope.optionsFunctionaryStatus.forEach(function(status){
+				if($scope.functionary.status == status.status){
+					$scope.status = status;
+				}
+			});
 		};
 
 		// Find a list of Functionaries
@@ -199,11 +215,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 				functionaryId: $stateParams.functionaryId
 			});
 			$scope.getFunctionaryExperience();
-			$scope.experiences.$promise.then(function(xp){
-				for(var i=0; i<$scope.experiences.length; i++){
-					console.log($scope.experiences[i]);
-				}
-			});
+			$scope.setStatusCombo();
 		};
 	}
 ]);

@@ -17,7 +17,7 @@ angular.module('core').service('Utility', [
 		};
 
 		this.getFunctionaryStatus = function() {
-			return [{status: 'Activo'}, {status: 'Despedido'}, {status: 'Reununcio'}];
+			return [{status: 'Activo'}, {status: 'Despedido'}, {status: 'Renuncio'}];
 		};
 
 		this.getFunctionaryRoles = function() {

@@ -112,6 +112,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 
 		// Create new Functionary
 		$scope.create = function() {
+			console.log(this.hireDate);
 			// Create new Functionary object
 			var functionary = new Functionaries ({
 				firstName: this.firstName,
@@ -176,6 +177,9 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		// Update existing Functionary
 		$scope.update = function() {
 			var functionary = $scope.functionary;
+			functionary.maritalStatus = $scope.maritalStatus.maritalStatus;
+			functionary.status = $scope.status.status;
+			functionary.role = $scope.role.role;
 			functionary.$update(function() {
 				$location.path('functionaries/' + functionary._id);
 			}, function(errorResponse) {
@@ -196,13 +200,27 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			});
 		};
 
-		$scope.setStatusCombo = function () {
-			$scope.optionsFunctionaryStatus.forEach(function(status){
-				if($scope.functionary.status == status.status){
-					$scope.status = status;
-				}
+		$scope.setComboValues = function () {
+			$scope.functionary.$promise.then(function(functionary){
+				$scope.optionsFunctionaryStatus.forEach(function(status){
+					if(functionary.status === status.status){
+						$scope.status = status;
+					}
+				});
+				$scope.optionsFunctionaryRoles.forEach(function(role){
+					if(functionary.role === role.role){
+						$scope.role = role;
+					}
+				});
+				$scope.optionsMaritalStatus.forEach(function(maritalStatus){
+					if(functionary.maritalStatus === maritalStatus.maritalStatus){
+						$scope.maritalStatus = maritalStatus;
+					}
+				});
 			});
 		};
+
+
 
 		// Find a list of Functionaries
 		$scope.find = function() {
@@ -215,7 +233,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 				functionaryId: $stateParams.functionaryId
 			});
 			$scope.getFunctionaryExperience();
-			$scope.setStatusCombo();
+			$scope.setComboValues();
 		};
 	}
 ]);

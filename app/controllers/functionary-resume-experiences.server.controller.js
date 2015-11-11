@@ -96,6 +96,17 @@ exports.functionaryResumeExperienceByID = function(req, res, next, id) {
 	});
 };
 
+
+
+exports.experienceByFunctionary = function(req, res, next, functionary){
+	FunctionaryResumeExperience.find({ functionary: functionary}).populate('user', 'displayName').exec(function(err, experience) {
+		if (err) return next(err);
+		if (! experience) return next(new Error('Failed to load Experience ' + experience));
+		req.functionaryResumeExperience = experience ;
+		next();
+	});
+};
+
 /**
  * Functionary resume experience authorization middleware
  */

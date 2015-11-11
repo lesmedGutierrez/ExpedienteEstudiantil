@@ -23,6 +23,7 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 				$scope.functionaryTitle = '';
 				$scope.companyLocation = '';
 				$scope.description = '';
+				$scope.modalParent.dismiss();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -66,6 +67,10 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 			$scope.functionaryResumeExperience = FunctionaryResumeExperiences.get({ 
 				functionaryResumeExperienceId: $stateParams.functionaryResumeExperienceId
 			});
+		};
+
+		$scope.cancel = function () {
+			$scope.modalParent.dismiss();
 		};
 
 		$scope.optionsYearRange = Utility.generateListOfYears();

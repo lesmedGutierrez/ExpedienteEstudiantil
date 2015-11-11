@@ -9,11 +9,15 @@ module.exports = function(app) {
 		.get(functionaryResumeExperiences.list)
 		.post(users.requiresLogin, functionaryResumeExperiences.create);
 
-	app.route('/functionary-resume-experiences/:functionaryResumeExperienceId')
+	/*app.route('/functionary-resume-experiences/:functionaryResumeExperienceId')
 		.get(functionaryResumeExperiences.read)
 		.put(users.requiresLogin, functionaryResumeExperiences.hasAuthorization, functionaryResumeExperiences.update)
-		.delete(users.requiresLogin, functionaryResumeExperiences.hasAuthorization, functionaryResumeExperiences.delete);
+		.delete(users.requiresLogin, functionaryResumeExperiences.hasAuthorization, functionaryResumeExperiences.delete);*/
+
+	app.route('/functionary-resume-experiences/:functionary')
+		.get(functionaryResumeExperiences.read);
 
 	// Finish by binding the Functionary resume experience middleware
 	app.param('functionaryResumeExperienceId', functionaryResumeExperiences.functionaryResumeExperienceByID);
+	app.param('functionary', functionaryResumeExperiences.experienceByFunctionary);
 };

@@ -45,7 +45,8 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 				templateUrl: 'modules/functionary-resume-experiences/views/create-functionary-resume-experience.client.view.html',
 				size: size,
 				controller: function($scope, $modalInstance, functionary){
-					$scope.functionary = functionary
+					$scope.functionary = functionary;
+					$scope.modalParent = $modalInstance;
 				},
 
 				resolve: {

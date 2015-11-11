@@ -100,7 +100,7 @@ exports.functionaryResumeEducationByID = function(req, res, next, id) {
 exports.educationByFunctionary = function(req, res, next, functionary){
 	FunctionaryResumeEducation.find({ functionary: functionary}).populate('user', 'displayName').exec(function(err, education) {
 		if (err) return next(err);
-		if (! education) return next(new Error('Failed to load Experience ' + functionary));
+		if (! education) return next(new Error('Failed to load education ' + functionary));
 		req.functionaryResumeEducation = education ;
 		next();
 	});

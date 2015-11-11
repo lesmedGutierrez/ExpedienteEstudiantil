@@ -18,7 +18,8 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 				templateUrl: 'modules/functionary-resume-educations/views/create-functionary-resume-education.client.view.html',
 				size: size,
 				controller: function($scope, $modalInstance, functionary){
-					$scope.functionary = functionary
+					$scope.functionary = functionary;
+					$scope.modalParent = $modalInstance;
 				},
 
 				resolve: {
@@ -31,7 +32,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			modalInstance.result.then(function (selectedItem) {
 				$scope.selected = selectedItem;
 			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
+				$scope.getFunctionaryEducation();
 			});
 		};
 
@@ -57,7 +58,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			modalInstance.result.then(function (selectedItem) {
 				$scope.selected = selectedItem;
 			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
+				$scope.getFunctionaryExperience();
 			});
 		};
 
@@ -228,8 +229,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 				});
 			});
 		};
-
-
 
 		// Find a list of Functionaries
 		$scope.find = function() {

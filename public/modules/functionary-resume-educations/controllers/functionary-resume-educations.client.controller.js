@@ -16,27 +16,20 @@ angular.module('functionary-resume-educations').controller('FunctionaryResumeEdu
 				attendedStartDate: this.attendedStartDate.year,
 				attendedEndDate: this.attendedEndDate.year
 			});
-			console.log('Hi');
 
 			// Redirect after save
 			functionaryResumeEducation.$save(function(response) {
-				//$location.path('functionaries/' + this.functionary._id);
-				//$location.path('functionary-resume-educations/' + response._id);
 				//Clear fields
-
 				$scope.schoolName = '';
 				$scope.description = '';
 				$scope.degree = '';
 				$scope.attendedStartDate = '';
 				$scope.attendedEndDate = '';
-
+				$scope.modalParent.dismiss();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
-
-
-
 		// Remove existing Functionary resume education
 		$scope.remove = function(functionaryResumeEducation) {
 			if ( functionaryResumeEducation ) { 
@@ -77,8 +70,11 @@ angular.module('functionary-resume-educations').controller('FunctionaryResumeEdu
 			});
 		};
 
-		$scope.optionsYearRange = Utility.generateListOfYears();
+		$scope.cancel = function () {
+			$scope.modalParent.dismiss();
+		};
 
+		$scope.optionsYearRange = Utility.generateListOfYears();
 		$scope.attendedStartDate = $scope.optionsYearRange[$scope.optionsYearRange.length-2];
 		$scope.attendedEndDate = $scope.optionsYearRange[$scope.optionsYearRange.length-1];
 	}

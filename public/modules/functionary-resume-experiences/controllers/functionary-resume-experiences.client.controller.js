@@ -1,8 +1,8 @@
 'use strict';
 
 // Functionary resume experiences controller
-angular.module('functionary-resume-experiences').controller('FunctionaryResumeExperiencesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries', 'FunctionaryResumeExperiences', 'Utility',
-	function($scope, $stateParams, $location, Authentication, Functionaries, FunctionaryResumeExperiences, Utility) {
+angular.module('functionary-resume-experiences').controller('FunctionaryResumeExperiencesController', ['$scope', '$stateParams', '$location', 'Authentication', 'FunctionaryResumeExperiences', 'Utility',
+	function($scope, $stateParams, $location, Authentication, FunctionaryResumeExperiences, Utility) {
 		$scope.authentication = Authentication;
 
 		// Create new Functionary resume experience
@@ -48,10 +48,10 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 
 		// Update existing Functionary resume experience
 		$scope.update = function() {
-			var functionaryResumeExperience = $scope.functionaryResumeExperience;
-
-			functionaryResumeExperience.$update(function() {
-				$location.path('functionary-resume-experiences/' + functionaryResumeExperience._id);
+			var experience = $scope.experience;
+			console.log($scope.experience);
+			experience.$update(function() {
+				$location.path('functionary-resume-experiences/' + experience._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -71,6 +71,26 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 
 		$scope.cancel = function () {
 			$scope.modalParent.dismiss();
+		};
+
+		$scope.$watch('experience', function() {
+			$scope.loadExperienceInfo();
+		});
+
+		$scope.loadExperienceInfo = function (){
+			console.log($scope.experience);
+			$scope.companyName = $scope.experience.companyName;
+			$scope.functionaryTitle = $scope.experience.functionaryTitle;
+			$scope.companyLocation = $scope.experience.companyLocation;
+			$scope.description = $scope.experience.description;
+			$scope.optionsYearRange.forEach(function (year) {
+				if ($scope.experience.attendedStartDate === year.year){
+					$scope.attendedStartDate = year;
+				}
+				if ($scope.experience.attendedEndDate === year.year){
+					$scope.attendedEndDate = year;
+				}
+			});
 		};
 
 		$scope.optionsYearRange = Utility.generateListOfYears();

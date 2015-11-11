@@ -9,13 +9,13 @@ module.exports = function(app) {
 		.get(functionaryResumeEducations.list)
 		.post(users.requiresLogin, functionaryResumeEducations.create);
 
-	/*app.route('/functionary-resume-educations/:functionaryResumeEducationId')
+	app.route('/functionary-resume-educations/:functionaryResumeEducationId')
 		.get(functionaryResumeEducations.read)
 		.put(users.requiresLogin, functionaryResumeEducations.hasAuthorization, functionaryResumeEducations.update)
-		.delete(users.requiresLogin, functionaryResumeEducations.hasAuthorization, functionaryResumeEducations.delete);*/
+		.delete(users.requiresLogin, functionaryResumeEducations.hasAuthorization, functionaryResumeEducations.delete);
 
-	app.route('/functionary-resume-educations/:functionary')
-		.get(functionaryResumeEducations.read);
+	/*app.route('/functionary-resume-educations/:functionary')
+		.get(functionaryResumeEducations.read);*/
 
 	// Finish by binding the Functionary resume education middleware
 	app.param('functionaryResumeEducationId', functionaryResumeEducations.functionaryResumeEducationByID);

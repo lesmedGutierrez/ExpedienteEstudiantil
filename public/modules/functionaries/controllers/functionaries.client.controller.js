@@ -38,7 +38,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 
 
 		$scope.modalAddWorkExperience = function (size, selectedFunctionary) {
-			$scope.update();
 			var modalInstance = $modal.open({
 				backgroundColor: 'white',
 				animation: $scope.animationsEnabled,
@@ -48,7 +47,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 					$scope.functionary = functionary;
 					$scope.modalParent = $modalInstance;
 				},
-
 				resolve: {
 					functionary: function () {
 						return selectedFunctionary;
@@ -63,6 +61,30 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			});
 		};
 
+		$scope.modalUpdateWorkExperience = function	(size, selectedWorkExperience){
+			var updateModalInstance = $modal.open({
+				backgroundColor: 'white',
+				animation: $scope.animationsEnabled,
+				templateUrl: 'modules/functionary-resume-experiences/views/edit-functionary-resume-experience.client.view.html',
+				size: size,
+				controller: function($scope, $modalInstance, experience){
+					$scope.experience = experience;
+					$scope.modalParent = $modalInstance;
+				},
+				resolve: {
+					experience: function () {
+						return selectedWorkExperience;
+					}
+				}
+			});
+
+			updateModalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+			}, function () {
+				console.log('dismiss!');
+			});
+		};
+
 		$scope.toggleAnimation = function () {
 			$scope.animationsEnabled = !$scope.animationsEnabled;
 		};
@@ -74,47 +96,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			var functionary = new Functionaries ({
 				firstName: this.firstName,
 				firstSurName: this.firstSurname,
-				secondSurname: this.secondSurname,
-				identification: this.identification,
-				birthdate: this.birthdate,
-				maritalStatus: this.maritalStatus.maritalStatus,
-				role: this.role.role,
-				address: this.address,
-				phoneNumber: this.phoneNumber,
-				cellphoneNumber: this.cellphoneNumber,
-				email: this.email,
-				hireDate: this.hireDate,
-				status: this.status.status
-			});
-
-			// Redirect after save
-			functionary.$save(function(response) {
-				$location.path('functionaries/' + response._id);
-				// Clear form fields
-				$scope.firstName  = '';
-				$scope.firstSurname = '';
-				$scope.secondSurname = '';
-				$scope.identification = '';
-				$scope.birthdate = '';
-				$scope.maritalStatus = '';
-				$scope.role = '';
-				$scope.phoneNumber = '';
-				$scope.cellphoneNumber = '';
-				$scope.email = '';
-				$scope.hireDate = '';
-				$scope.status = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-
-		// Create new Functionary
-		$scope.create = function() {
-			// Create new Functionary object
-			var functionary = new Functionaries ({
-				firstName: this.firstName,
-				firstSurname: this.firstSurname,
 				secondSurname: this.secondSurname,
 				identification: this.identification,
 				birthdate: this.birthdate,

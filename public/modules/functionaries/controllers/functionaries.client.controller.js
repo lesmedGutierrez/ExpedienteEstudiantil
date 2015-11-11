@@ -3,8 +3,8 @@
 // Functionaries controller
 
 
-angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries', 'GetFunctionaryExperiences','Utility', '$modal', '$log',
-	function($scope, $stateParams, $location, Authentication, Functionaries, GetFunctionaryExperiences, Utility, $modal, $log) {
+angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries', 'GetFunctionaryExperiences', 'GetFunctionaryEducation','Utility', '$modal', '$log',
+	function($scope, $stateParams, $location, Authentication, Functionaries, GetFunctionaryExperiences, GetFunctionaryEducation, Utility, $modal, $log) {
 		$scope.authentication = Authentication;
 
 		$scope.animationsEnabled = true;
@@ -12,9 +12,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 
 		//Open a modal window to Add a single education to the resume.
 		$scope.modalAddEducation = function (size, selectedFunctionary) {
-
-			console.log ( '#someButton was clicked' );
-
 			var modalInstance = $modal.open({
 				backgroundColor: 'white',
 				animation: $scope.animationsEnabled,
@@ -112,7 +109,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 
 		// Create new Functionary
 		$scope.create = function() {
-			console.log(this.hireDate);
 			// Create new Functionary object
 			var functionary = new Functionaries ({
 				firstName: this.firstName,
@@ -200,6 +196,19 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			});
 		};
 
+		$scope.getFunctionaryEducation = function (){
+			$scope.educations = GetFunctionaryEducation.query({functionary: $scope.functionary._id});
+			$scope.educations.$promise.then(function(educations){
+				var result = [];
+				educations.forEach(function (education) {
+					if (education.functionary === $scope.functionary._id) {
+						result.push(education);
+					}
+				});
+				$scope.educations = result;
+			});
+		};
+
 		$scope.setComboValues = function () {
 			$scope.functionary.$promise.then(function(functionary){
 				$scope.optionsFunctionaryStatus.forEach(function(status){
@@ -232,6 +241,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			$scope.functionary = Functionaries.get({ 
 				functionaryId: $stateParams.functionaryId
 			});
+			$scope.getFunctionaryEducation();
 			$scope.getFunctionaryExperience();
 			$scope.setComboValues();
 		};

@@ -22,3 +22,14 @@ angular.module('functionaries').factory('GetFunctionaryExperiences', ['$resource
 		});
 	}
 ]);
+
+angular.module('functionaries').factory('GetFunctionaryEducation', ['$resource',
+	function($resource){
+		return $resource('/functionary-resume-educations/:functionary', { functionary: '@functionary'
+		}, {
+			update: {
+				method: 'GET'
+			}
+		});
+	}
+]);

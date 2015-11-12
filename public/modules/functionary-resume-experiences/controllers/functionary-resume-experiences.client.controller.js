@@ -1,11 +1,9 @@
 'use strict';
 
 // Functionary resume experiences controller
-angular.module('functionary-resume-experiences').controller('FunctionaryResumeExperiencesController', ['$scope', '$stateParams', '$location', 'Authentication', 'FunctionaryResumeExperiences', 'Utility',
-	function($scope, $stateParams, $location, Authentication, FunctionaryResumeExperiences, Utility) {
+angular.module('functionary-resume-experiences').controller('FunctionaryResumeExperiencesController', ['$scope', '$stateParams', '$location', 'Authentication', 'FunctionaryResumeExperiences', 'Utility', '$modal',
+	function($scope, $stateParams, $location, Authentication, FunctionaryResumeExperiences, Utility, $modal) {
 		$scope.authentication = Authentication;
-
-		$scope.functionaryExperiences = [];
 
 		// Create new Functionary resume experience
 		$scope.create = function() {
@@ -25,10 +23,58 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 				$scope.functionaryTitle = '';
 				$scope.companyLocation = '';
 				$scope.description = '';
-				$scope.functionaryExperiences.push(response);
+				$scope.functionaryExperiences.push(functionaryResumeExperience);
 				$scope.modalParent.dismiss();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.modalAddWorkExperience = function (size, selectedFunctionary, functionaryExperiences) {
+			var modalInstance = $modal.open({
+				backgroundColor: 'white',
+				animation: $scope.animationsEnabled,
+				templateUrl: 'modules/functionary-resume-experiences/views/create-functionary-resume-experience.client.view.html',
+				size: size,
+				controller: function($scope, $modalInstance, functionary){
+					$scope.functionary = functionary;
+					$scope.modalParent = $modalInstance;
+					$scope.functionaryExperiences = functionaryExperiences;
+				},
+				resolve: {
+					functionary: function () {
+						return selectedFunctionary;
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+			}, function () {
+			});
+		};
+
+		$scope.modalUpdateWorkExperience = function	(size, selectedWorkExperience ,functionaryExperiences){
+			var updateModalInstance = $modal.open({
+				backgroundColor: 'white',
+				animation: $scope.animationsEnabled,
+				templateUrl: 'modules/functionary-resume-experiences/views/edit-functionary-resume-experience.client.view.html',
+				size: size,
+				controller: function($scope, $modalInstance, experience){
+					$scope.experience = experience;
+					$scope.modalParent = $modalInstance;
+					$scope.functionaryExperiences = functionaryExperiences;
+				},
+				resolve: {
+					experience: function () {
+						return selectedWorkExperience;
+					}
+				}
+			});
+
+			updateModalInstance.result.then(function (selectedItem) {
+				$scope.selected = selectedItem;
+			}, function () {
 			});
 		};
 
@@ -56,10 +102,15 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 
 		// Update existing Functionary resume experience
 		$scope.update = function() {
+			$scope.experience.companyName = $scope.companyName;
+			$scope.experience.functionaryTitle = $scope.functionaryTitle;
+			$scope.experience.companyLocation = $scope.companyLocation;
+			$scope.experience.description = $scope.description;
+			$scope.experience.attendedStartDate = $scope.attendedStartDate.year;
+			$scope.experience.attendedEndDate = $scope.attendedEndDate.year;
 			var experience = $scope.experience;
-			console.log($scope.experience);
 			experience.$update(function() {
-				$location.path('functionary-resume-experiences/' + experience._id);
+				$scope.modalParent.dismiss();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -71,7 +122,6 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 		};
 		$scope.findByFunctionary = function (functionary) {
 			$scope.find();
-			console.log('Calling this :D');
 			$scope.selectedFunctionary = functionary;
 			var result = [];
 			functionary.$promise.then(function (func) {
@@ -82,7 +132,6 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 						}
 					});
 					$scope.functionaryExperiences = result;
-					console.log(result);
 				});
 			});
 		};

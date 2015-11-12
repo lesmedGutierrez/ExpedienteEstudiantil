@@ -35,53 +35,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			});
 		};
 
-
-		$scope.modalAddWorkExperience = function (size, selectedFunctionary) {
-			var modalInstance = $modal.open({
-				backgroundColor: 'white',
-				animation: $scope.animationsEnabled,
-				templateUrl: 'modules/functionary-resume-experiences/views/create-functionary-resume-experience.client.view.html',
-				size: size,
-				controller: function($scope, $modalInstance, functionary){
-					$scope.functionary = functionary;
-					$scope.modalParent = $modalInstance;
-				},
-				resolve: {
-					functionary: function () {
-						return selectedFunctionary;
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-			}, function () {
-			});
-		};
-
-		$scope.modalUpdateWorkExperience = function	(size, selectedWorkExperience){
-			var updateModalInstance = $modal.open({
-				backgroundColor: 'white',
-				animation: $scope.animationsEnabled,
-				templateUrl: 'modules/functionary-resume-experiences/views/edit-functionary-resume-experience.client.view.html',
-				size: size,
-				controller: function($scope, $modalInstance, experience){
-					$scope.experience = experience;
-					$scope.modalParent = $modalInstance;
-				},
-				resolve: {
-					experience: function () {
-						return selectedWorkExperience;
-					}
-				}
-			});
-
-			updateModalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-			}, function () {
-			});
-		};
-
 		$scope.toggleAnimation = function () {
 			$scope.animationsEnabled = !$scope.animationsEnabled;
 		};
@@ -148,10 +101,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			} else {
 				$scope.functionary.$remove(function(){});
 			}
-		};
-
-		$scope.remove_experience = function(event, xp){
-
 		};
 
 		// Update existing Functionary

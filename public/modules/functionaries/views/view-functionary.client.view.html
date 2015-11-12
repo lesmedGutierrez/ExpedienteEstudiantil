@@ -67,27 +67,28 @@
 					<div class="container-border no-padding">
 						<a class="list-group-item">
 							<div>
-							<span class="pull-right">
-								<button class="btn btn-default" ng-click="remove(xp);">
-									<i class="glyphicon glyphicon-trash"></i>
-								</button>
-							</span>
-							<h4 ng-click="modalUpdateWorkExperience('lg', xp)">
-								<h4 class="list-group-item-heading">{{'Compañia: ' + xp.companyName}}</h4>
-								<h4 class="list-group-item-heading">{{'Ubicación de la compañia: ' + xp.companyLocation}}</h4>
-								<h4 class="list-group-item-heading">{{'Rol: ' + xp.functionaryTitle}}</h4>
-								<h4 class="list-group-item-heading">{{'Fecha: ' + xp.attendedStartDate + ' - ' + xp.attendedEndDate}}</h4>
-							</h4>
+								<span class="pull-right">
+									<button class="btn btn-default" ng-click="remove(xp);">
+										<i class="glyphicon glyphicon-trash"></i>
+									</button>
+								</span>
+								<div ng-click="modalUpdateWorkExperience('lg', xp, functionaryExperiences)">
+									<h4>
+										<h4 class="list-group-item-heading">{{'Compañia: ' + xp.companyName}}</h4>
+										<h4 class="list-group-item-heading">{{'Ubicación de la compañia: ' + xp.companyLocation}}</h4>
+										<h4 class="list-group-item-heading">{{'Rol: ' + xp.functionaryTitle}}</h4>
+										<h4 class="list-group-item-heading">{{'Fecha: ' + xp.attendedStartDate + ' - ' + xp.attendedEndDate}}</h4>
+									</h4>
+								</div>
 							</div>
 						</a>
 					</div>
 				</div>
 				<br>
 			</div>
-		</div>
-
-		<div class="form-group">
-			<button ng-click="modalAddWorkExperience('lg', functionary)" class="btn btn-primary align-field"> Agregar experiencia</button>
+			<div class="form-group">
+				<button ng-click="modalAddWorkExperience('lg', functionary, functionaryExperiences)" class="btn btn-primary align-field"> Agregar experiencia</button>
+			</div>
 		</div>
 	</div>
 

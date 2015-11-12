@@ -19,5 +19,5 @@ module.exports = function(app) {
 
 	// Finish by binding the Functionary resume education middleware
 	app.param('functionaryResumeEducationId', functionaryResumeEducations.functionaryResumeEducationByID);
-	app.param('functionary', functionaryResumeEducations.educationByFunctionary);
+	//app.param('functionary', functionaryResumeEducations.educationByFunctionary);
 };

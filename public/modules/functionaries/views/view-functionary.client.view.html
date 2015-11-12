@@ -61,21 +61,28 @@
 		<div class="form-group">
 			<button ng-click="modalAddEducation('lg', functionary)" class="btn btn-primary align-field"> Agregar educación</button>
 		</div>
-		<div ng-repeat="xp in experiences" ng-click="modalUpdateWorkExperience('lg', xp)">
-			<div class="container">
-				<div class="jumbotron  container-border">
-					<span class="pull-right">
-						<button class="btn btn-default" ng-click="remove($event, xp);">
-							<i class="glyphicon glyphicon-trash"></i>
-						</button>
-					</span>
-					<h4>
-						<h4 class="list-group-item-heading">{{'Compañia: ' + xp.companyName}}</h4>
-						<h4 class="list-group-item-heading">{{'Ubicación de la compañia: ' + xp.companyLocation}}</h4>
-						<h4 class="list-group-item-heading">{{'Rol: ' + xp.functionaryTitle}}</h4>
-						<h4 class="list-group-item-heading">{{'Fecha: ' + xp.attendedStartDate + ' - ' + xp.attendedEndDate}}</h4>
-					</h4>
+		<div ng-controller="FunctionaryResumeExperiencesController" data-ng-init="findByFunctionary(functionary)">
+			<div ng-repeat="xp in functionaryExperiences" >
+				<div class="container">
+					<div class="container-border no-padding">
+						<a class="list-group-item">
+							<div>
+							<span class="pull-right">
+								<button class="btn btn-default" ng-click="remove(xp);">
+									<i class="glyphicon glyphicon-trash"></i>
+								</button>
+							</span>
+							<h4 ng-click="modalUpdateWorkExperience('lg', xp)">
+								<h4 class="list-group-item-heading">{{'Compañia: ' + xp.companyName}}</h4>
+								<h4 class="list-group-item-heading">{{'Ubicación de la compañia: ' + xp.companyLocation}}</h4>
+								<h4 class="list-group-item-heading">{{'Rol: ' + xp.functionaryTitle}}</h4>
+								<h4 class="list-group-item-heading">{{'Fecha: ' + xp.attendedStartDate + ' - ' + xp.attendedEndDate}}</h4>
+							</h4>
+							</div>
+						</a>
+					</div>
 				</div>
+				<br>
 			</div>
 		</div>
 

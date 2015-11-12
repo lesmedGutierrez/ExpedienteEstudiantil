@@ -11,25 +11,3 @@ angular.module('functionaries').factory('Functionaries', ['$resource',
 		});
 	}
 ]);
-
-angular.module('functionaries').factory('GetFunctionaryExperiences', ['$resource',
-	function($resource){
-		return $resource('/functionary-resume-experiences/:functionary', { functionary: '@functionary'
-		}, {
-			update: {
-				method: 'GET'
-			}
-		});
-	}
-]);
-
-angular.module('functionaries').factory('GetFunctionaryEducation', ['$resource',
-	function($resource){
-		return $resource('/functionary-resume-educations/:functionary', { functionary: '@functionary'
-		}, {
-			update: {
-				method: 'GET'
-			}
-		});
-	}
-]);

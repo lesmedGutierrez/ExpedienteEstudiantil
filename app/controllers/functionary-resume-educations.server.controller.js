@@ -97,6 +97,7 @@ exports.functionaryResumeEducationByID = function(req, res, next, id) {
 	});
 };
 
+/*
 exports.educationByFunctionary = function(resq, res, next, functionary){
 	FunctionaryResumeEducation.find({ functionary: functionary}).populate('user', 'displayName').exec(function(err, education) {
 		if (err) return next(err);
@@ -105,6 +106,7 @@ exports.educationByFunctionary = function(resq, res, next, functionary){
 		next();
 	});
 };
+*/
 
 /**
  * Functionary resume education authorization middleware

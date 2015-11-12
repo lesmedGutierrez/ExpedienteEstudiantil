@@ -5,6 +5,8 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 	function($scope, $stateParams, $location, Authentication, FunctionaryResumeExperiences, Utility) {
 		$scope.authentication = Authentication;
 
+		$scope.functionaryExperiences = [];
+
 		// Create new Functionary resume experience
 		$scope.create = function() {
 			// Create new Functionary resume experience object
@@ -23,6 +25,7 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 				$scope.functionaryTitle = '';
 				$scope.companyLocation = '';
 				$scope.description = '';
+				$scope.functionaryExperiences.push(response);
 				$scope.modalParent.dismiss();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
@@ -33,10 +36,15 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 		$scope.remove = function(functionaryResumeExperience) {
 			if ( functionaryResumeExperience ) { 
 				functionaryResumeExperience.$remove();
-
 				for (var i in $scope.functionaryResumeExperiences) {
 					if ($scope.functionaryResumeExperiences [i] === functionaryResumeExperience) {
 						$scope.functionaryResumeExperiences.splice(i, 1);
+					}
+				}
+
+				for (var i in $scope.functionaryExperiences){
+					if ($scope.functionaryExperiences [i] === functionaryResumeExperience){
+						$scope.functionaryExperiences.splice(i, 1);
 					}
 				}
 			} else {
@@ -61,6 +69,23 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 		$scope.find = function() {
 			$scope.functionaryResumeExperiences = FunctionaryResumeExperiences.query();
 		};
+		$scope.findByFunctionary = function (functionary) {
+			$scope.find();
+			console.log('Calling this :D');
+			$scope.selectedFunctionary = functionary;
+			var result = [];
+			functionary.$promise.then(function (func) {
+				$scope.functionaryResumeExperiences.$promise.then(function(functionaryResumeExperiences){
+					functionaryResumeExperiences.forEach(function(experience) {
+						if (experience.functionary === func._id) {
+							result.push(experience);
+						}
+					});
+					$scope.functionaryExperiences = result;
+					console.log(result);
+				});
+			});
+		};
 
 		// Find existing Functionary resume experience
 		$scope.findOne = function() {
@@ -74,11 +99,12 @@ angular.module('functionary-resume-experiences').controller('FunctionaryResumeEx
 		};
 
 		$scope.$watch('experience', function() {
-			$scope.loadExperienceInfo();
+			if ($scope.experience !== undefined){
+				$scope.loadExperienceInfo();
+			}
 		});
 
 		$scope.loadExperienceInfo = function (){
-			console.log($scope.experience);
 			$scope.companyName = $scope.experience.companyName;
 			$scope.functionaryTitle = $scope.experience.functionaryTitle;
 			$scope.companyLocation = $scope.experience.companyLocation;

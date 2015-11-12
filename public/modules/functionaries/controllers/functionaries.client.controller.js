@@ -3,8 +3,8 @@
 // Functionaries controller
 
 
-angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries', 'GetFunctionaryExperiences', 'GetFunctionaryEducation','Utility', '$modal', '$log',
-	function($scope, $stateParams, $location, Authentication, Functionaries, GetFunctionaryExperiences, GetFunctionaryEducation, Utility, $modal, $log) {
+angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', '$controller', 'Authentication', 'Functionaries', /*'GetFunctionaryEducation',*/'Utility', '$modal', '$log',
+	function($scope, $stateParams, $location, Authentication, $controller, Functionaries,/* GetFunctionaryEducation,*/ Utility, $modal, $log) {
 		$scope.authentication = Authentication;
 
 		$scope.animationsEnabled = true;
@@ -32,7 +32,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			modalInstance.result.then(function (selectedItem) {
 				$scope.selected = selectedItem;
 			}, function () {
-				$scope.getFunctionaryEducation();
 			});
 		};
 
@@ -57,7 +56,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			modalInstance.result.then(function (selectedItem) {
 				$scope.selected = selectedItem;
 			}, function () {
-				$scope.getFunctionaryExperience();
 			});
 		};
 
@@ -81,7 +79,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			updateModalInstance.result.then(function (selectedItem) {
 				$scope.selected = selectedItem;
 			}, function () {
-				console.log('dismiss!');
 			});
 		};
 
@@ -153,6 +150,10 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			}
 		};
 
+		$scope.remove_experience = function(event, xp){
+
+		};
+
 		// Update existing Functionary
 		$scope.update = function() {
 			var functionary = $scope.functionary;
@@ -166,31 +167,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			});
 		};
 
-		$scope.getFunctionaryExperience = function () {
-			$scope.experiences = GetFunctionaryExperiences.query({ functionary: $scope.functionary._id });
-			$scope.experiences.$promise.then(function(experiences) {
-				var result = [];
-				experiences.forEach(function (experience) {
-					if (experience.functionary === $scope.functionary._id) {
-						result.push(experience);
-					}
-				});
-				$scope.experiences = result;
-			});
-		};
-
-		$scope.getFunctionaryEducation = function (){
-			$scope.educations = GetFunctionaryEducation.query({functionary: $scope.functionary._id});
-			$scope.educations.$promise.then(function(educations){
-				var result = [];
-				educations.forEach(function (education) {
-					if (education.functionary === $scope.functionary._id) {
-						result.push(education);
-					}
-				});
-				$scope.educations = result;
-			});
-		};
 
 		$scope.setComboValues = function () {
 			$scope.functionary.$promise.then(function(functionary){
@@ -222,8 +198,6 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			$scope.functionary = Functionaries.get({ 
 				functionaryId: $stateParams.functionaryId
 			});
-			$scope.getFunctionaryEducation();
-			$scope.getFunctionaryExperience();
 			$scope.setComboValues();
 		};
 	}

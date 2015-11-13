@@ -5,7 +5,6 @@
         <form class="form-horizontal" data-ng-submit="create()" novalidate>
             <fieldset>
                 <div class="modal-body">
-
                     <label class="control-label" for="schoolname">Universidad</label>
                     <div class="controls">
                         <input type="text" data-ng-model="schoolName" id="schoolname" class="form-control" required>
@@ -23,7 +22,7 @@
 
                     <label class="control-label" for="attendedstartdate">Año de inicio</label>
                     <div class="controls">
-                        <select class="form-control align-field" data-ng-model="attendedStartDate" id="attendedstartdate"
+                        <select class="form-control" data-ng-model="attendedStartDate" id="attendedstartdate"
                                 ng-options="year as year.year for year in optionsYearRange" required>
                             <option selected="selected">3</option>
                         </select>
@@ -31,7 +30,7 @@
 
                     <label class="control-label" for="attendedenddate">Año de graduacion</label>
                     <div class="controls">
-                        <select class="form-control align-field" data-ng-model="attendedEndDate" id="attendedenddate"
+                        <select class="form-control" data-ng-model="attendedEndDate" id="attendedenddate"
                                 ng-options="year as year.year for year in optionsYearRange" required>
                         </select>
                     </div>
@@ -44,7 +43,6 @@
 				<div data-ng-show="error" class="text-danger">
 					<strong data-ng-bind="error"></strong>
 				</div>
-
             </fieldset>
         </form>
 </section>

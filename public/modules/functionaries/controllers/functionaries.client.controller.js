@@ -3,38 +3,15 @@
 // Functionaries controller
 
 
-angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', '$controller', 'Authentication', 'Functionaries', /*'GetFunctionaryEducation',*/'Utility', '$modal', '$log',
-	function($scope, $stateParams, $location, Authentication, $controller, Functionaries,/* GetFunctionaryEducation,*/ Utility, $modal, $log) {
+angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', '$controller', 'Authentication', 'Functionaries', 'Utility',
+	function($scope, $stateParams, $location, Authentication, $controller, Functionaries, Utility) {
 		$scope.authentication = Authentication;
 
 		$scope.animationsEnabled = true;
 		$scope.experience = [];
+		$scope.education = [];
 
 		//Open a modal window to Add a single education to the resume.
-		$scope.modalAddEducation = function (size, selectedFunctionary) {
-			var modalInstance = $modal.open({
-				backgroundColor: 'white',
-				animation: $scope.animationsEnabled,
-				templateUrl: 'modules/functionary-resume-educations/views/create-functionary-resume-education.client.view.html',
-				size: size,
-				controller: function($scope, $modalInstance, functionary){
-					$scope.functionary = functionary;
-					$scope.modalParent = $modalInstance;
-				},
-
-				resolve: {
-					functionary: function () {
-						return selectedFunctionary;
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-			}, function () {
-			});
-		};
-
 		$scope.toggleAnimation = function () {
 			$scope.animationsEnabled = !$scope.animationsEnabled;
 		};
@@ -45,7 +22,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			// Create new Functionary object
 			var functionary = new Functionaries ({
 				firstName: this.firstName,
-				firstSurName: this.firstSurname,
+				firstSurname: this.firstSurname,
 				secondSurname: this.secondSurname,
 				identification: this.identification,
 				birthdate: this.birthdate,

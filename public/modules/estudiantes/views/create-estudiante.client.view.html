@@ -27,8 +27,11 @@
                     </div>
                     <div class="">
                         <label class="control-label" for="name">Fecha de nacimiento</label>
-                        <div class="controls">
+                        <!--<div class="controls">
                             <input type="date" data-ng-model="fecha_de_nacimiento" id="fecha_de_nacimiento"  class="form-control align-field"required >
+                        </div>-->
+                        <div class="controls">
+                            <input id="fecha_de_nacimiento" type="text" placeholder='dd/mm/yyyy' data-ng-model="fecha_de_nacimiento" class="form-control align-field"required />
                         </div>
                     </div>
                     <label class="control-label" for="name">Cédula o número de pasaporte</label>
@@ -101,7 +104,15 @@
                     </div>
                     <label class="control-label" for="name">Colegio de procedencia</label>
                     <div class="controls">
-                        <input type="text" data-ng-model="colegio_procedencia" id="colegio_procedencia" class="form-control align-field" required>
+                        <select class="form-control align-field" data-ng-model="colegio_procedencia" id="colegio_procedencia"
+                                ng-options="high_school as high_school.name for high_school in high_schools_list">
+                        </select>
+                    </div>
+                    <div ng-if="colegio_procedencia.name == 'Otro'" class="animate-if" class="form-group col-xs-4 no-margin-bottom">
+                        <label class="control-label" for="name">Digite el colegio de procendecia</label>
+                        <div class="controls">
+                            <input type="text" ng-model="$parent.colegio_procedencia_nuevo" id="colegio_procedencia_nuevo" class="form-control align-field">
+                        </div>
                     </div>
                     <span class="form-group col-xs-6 no-margin-bottom" >
                         <label class="control-label" for="name">Año de Ingreso al Colegio Científico</label>
@@ -121,10 +132,6 @@
                     </span>
 
                     <label class="transparent-label" for="name">. . . . . . . . . </label>
-
-
-
-
 
                     <div class = "form-group col-xs-6 no-margin-bottom">
                         <label class="control-label" for="name">Adecuación significativa</label>
@@ -153,9 +160,13 @@
                     </span>
                     <br/>
                     <br/>
-                    <div class="controls align-field">
+
+                    <div class="controls">
                         <label class="control-label" for="name">Notas del estudiante</label>
-                        <div class="gridStyle" ng-grid="gridOptionsSON"></div>
+                        <div class="form-group no-margin-bottom">
+                            <div class="nota-header nota-noveno-header no-margin-bottom grid-align">Notas de noveno</div>
+                        </div>
+                        <div class="gridStyle ngGridNotesSON" ng-grid="gridOptionsSON"></div>
                     </div>
                 </div>
                 <div class="form-group">

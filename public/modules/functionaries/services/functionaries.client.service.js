@@ -11,4 +11,3 @@ angular.module('functionaries').factory('Functionaries', ['$resource',
 		});
 	}
 ]);
-

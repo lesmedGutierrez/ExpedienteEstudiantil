@@ -1,50 +1,44 @@
 <section data-ng-controller="FunctionaryResumeExperiencesController">
-    <div class="page-header">
-        <h1>New Functionary resume experience</h1>
+    <div class="modal-header">
+        <h1 class="modal-title">Nueva experiencia de trabajo</h1>
     </div>
-    <div class="col-md-12">
         <form class="form-horizontal" data-ng-submit="create()" novalidate>
             <fieldset>
-
-                <div class="form-group">
-
-                    <h2>Experiencia</h2>
-
-
+                <div class="modal-body">
                     <label class="control-label" for="companyname">Compañia</label>
                     <div class="controls">
                         <input type="text" data-ng-model="companyName" id="companyname" class="form-control" required>
                     </div>
 
-                    <label class="control-label" for="title">Posicion de trabajo</label>
+                    <label class="control-label" for="functionarytitle">Posicion de trabajo</label>
                     <div class="controls">
-                        <input type="text" data-ng-model="degree" id="title" class="form-control" required>
+                        <input type="text" data-ng-model="functionaryTitle" id="functionarytitle" class="form-control" required>
                     </div>
 
                     <label class="control-label" for="companylocation">Ubicacion</label>
                     <div class="controls">
-                        <input type="text" data-ng-model="description" id="companylocation" class="form-control" required>
+                        <input type="text" data-ng-model="companyLocation" id="companylocation" class="form-control" required>
                     </div>
 
-                    <label class="control-label" for="attendedstartdate">Fecha de inicio</label>
+                    <label class="control-label" for="attendedstartdate">Año de inicio</label>
                     <div class="controls">
-                        <select class="form-control align-field" data-ng-model="attendedStartDate" id="attendedstartdate"
+                        <select class="form-control" data-ng-model="attendedStartDate" id="attendedstartdate"
                                 ng-options="year as year.year for year in optionsYearRange" required>
                             <option selected="selected">3</option>
                         </select>
                     </div>
 
-                    <label class="control-label" for="attendedenddate">Fecha de graduacion</label>
+                    <label class="control-label" for="attendedenddate">Año final</label>
                     <div class="controls">
-                        <select class="form-control align-field" data-ng-model="attendedEndDate" id="attendedenddate"
+                        <select class="form-control" data-ng-model="attendedEndDate" id="attendedenddate"
                                 ng-options="year as year.year for year in optionsYearRange" required>
                         </select>
                     </div>
 
-                </div>
-
-                <div class="form-group">
-                    <input type="submit" class="btn btn-default">
+                    <div class="modal-footer">
+                        <input type="submit" value="Agregar" class="btn btn-success">
+                        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancelar</button>
+                    </div>
                 </div>
 				<div data-ng-show="error" class="text-danger">
 					<strong data-ng-bind="error"></strong>

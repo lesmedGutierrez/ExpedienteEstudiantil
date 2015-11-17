@@ -52,9 +52,8 @@ var FunctionarySchema = new Schema({
 	},
 
 	birthdate: {
-		type: Date,
-		default: '',
-		required: 'Porfavor la fecha de nacimiento del funcionario',
+		type: String,
+		required: 'Por favor la fecha de nacimiento del funcionario',
 		trim: true
 	},
 
@@ -79,29 +78,17 @@ var FunctionarySchema = new Schema({
 		trim: true
 	},
 
-
-	resume:{
-		summary:{
-			type: String,
-			default: '',
-			trim: true
-		},
-		experience:[{ type:Schema.ObjectId, ref:'FunctionaryResumeExperience'}],
-		education:[{type:Schema.ObjectId, ref:'FunctionaryResumeEducation'}],
-		language:[{ type:Schema.ObjectId, ref:'FunctionaryResumeLanguage'}]
-	},
-
 	email: {
 		type: String,
 		default: '',
-		required: 'Porfavor llene el email del funcionario',
+		required: 'Por favor llene el email del funcionario',
 		trim: true
 	},
 
 	hireDate: {
-		type: Date,
-		default: Date.now,
-		required: 'Porfavor llene la fecha de contratacion del funcionario',
+		type: String,
+		default: '',
+		required: 'Por favor llene la fecha de contratacion del funcionario',
 		trim: true
 	},
 

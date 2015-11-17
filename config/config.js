@@ -35,18 +35,14 @@ module.exports.getGlobbedFiles = function(globPatterns, removeRoot) {
 	} else if (_.isString(globPatterns)) {
 		if (urlRegex.test(globPatterns)) {
 			output.push(globPatterns);
-		} else {
-			glob(globPatterns, {
-				sync: true
-			}, function(err, files) {
-				if (removeRoot) {
-					files = files.map(function(file) {
-						return file.replace(removeRoot, '');
-					});
-				}
-
-				output = _.union(output, files);
-			});
+		}   else {
+			var files = glob(globPatterns, { sync: true });
+			if (removeRoot) {
+				files = files.map(function(file) {
+					return file.replace(removeRoot, '');
+				});
+			}
+			output = _.union(output, files);
 		}
 	}
 

@@ -11,8 +11,8 @@ module.exports = function(app) {
 
 	app.route('/functionaries/:functionaryId')
 		.get(functionaries.read)
-		.put(users.requiresLogin, functionaries.hasAuthorization, functionaries.update)
-		.delete(users.requiresLogin, functionaries.hasAuthorization, functionaries.delete);
+		.put(users.requiresLogin, functionaries.update)
+		.delete(users.requiresLogin, functionaries.delete);
 
 	// Finish by binding the Functionary middleware
 	app.param('functionaryId', functionaries.functionaryByID);

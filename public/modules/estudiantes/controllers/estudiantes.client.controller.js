@@ -74,7 +74,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             } else {
                 $scope.anno_ingreso_error_mayor_actual = false;
             }
-
         });
 
 		// Create new Estudiante

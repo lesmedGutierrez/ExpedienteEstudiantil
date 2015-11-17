@@ -87,14 +87,26 @@ exports.list = function(req, res) {
 /**
  * Functionary resume education middleware
  */
+
 exports.functionaryResumeEducationByID = function(req, res, next, id) { 
 	FunctionaryResumeEducation.findById(id).populate('user', 'displayName').exec(function(err, functionaryResumeEducation) {
 		if (err) return next(err);
-		if (! functionaryResumeEducation) return next(new Error('Failed to load Functionary resume education ' + id));
+		if (! functionaryResumeEducation) return next(new Error('Failed to load Functionary resume education patata ' + id));
 		req.functionaryResumeEducation = functionaryResumeEducation ;
 		next();
 	});
 };
+
+/*
+exports.educationByFunctionary = function(resq, res, next, functionary){
+	FunctionaryResumeEducation.find({ functionary: functionary}).populate('user', 'displayName').exec(function(err, education) {
+		if (err) return next(err);
+		if (! education) return next(new Error('Failed to load education ' + functionary));
+		req.functionaryResumeEducation = education ;
+		next();
+	});
+};
+*/
 
 /**
  * Functionary resume education authorization middleware

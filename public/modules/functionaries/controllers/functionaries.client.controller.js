@@ -3,11 +3,21 @@
 // Functionaries controller
 
 
-angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Functionaries','Utility', '$modal', '$log',
-	function($scope, $stateParams, $location, Authentication, Functionaries, Utility, $modal, $log) {
+angular.module('functionaries').controller('FunctionariesController', ['$scope', '$stateParams', '$location', '$controller', 'Authentication', 'Functionaries', 'Utility',
+	function($scope, $stateParams, $location, Authentication, $controller, Functionaries, Utility) {
 		$scope.authentication = Authentication;
 
-		// Create new Functionary
+		$scope.animationsEnabled = true;
+		$scope.experience = [];
+		$scope.education = [];
+
+		//Open a modal window to Add a single education to the resume.
+		$scope.toggleAnimation = function () {
+			$scope.animationsEnabled = !$scope.animationsEnabled;
+		};
+
+
+		// Create new Experience
 		$scope.create = function() {
 			// Create new Functionary object
 			var functionary = new Functionaries ({
@@ -57,8 +67,8 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		// Remove existing Functionary
 		$scope.remove = function(event,functionary) {
 			if ( functionary ) {
-				event.preventDefault()
-				event.stopPropagation()
+				event.preventDefault();
+				event.stopPropagation();
 				functionary.$remove();
 				for (var i in $scope.functionaries) {
 					if ($scope.functionaries [i] === functionary) {
@@ -73,11 +83,34 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 		// Update existing Functionary
 		$scope.update = function() {
 			var functionary = $scope.functionary;
-
+			functionary.maritalStatus = $scope.maritalStatus.maritalStatus;
+			functionary.status = $scope.status.status;
+			functionary.role = $scope.role.role;
 			functionary.$update(function() {
 				$location.path('functionaries/' + functionary._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
+			});
+		};
+
+
+		$scope.setComboValues = function () {
+			$scope.functionary.$promise.then(function(functionary){
+				$scope.optionsFunctionaryStatus.forEach(function(status){
+					if(functionary.status === status.status){
+						$scope.status = status;
+					}
+				});
+				$scope.optionsFunctionaryRoles.forEach(function(role){
+					if(functionary.role === role.role){
+						$scope.role = role;
+					}
+				});
+				$scope.optionsMaritalStatus.forEach(function(maritalStatus){
+					if(functionary.maritalStatus === maritalStatus.maritalStatus){
+						$scope.maritalStatus = maritalStatus;
+					}
+				});
 			});
 		};
 
@@ -91,10 +124,7 @@ angular.module('functionaries').controller('FunctionariesController', ['$scope',
 			$scope.functionary = Functionaries.get({ 
 				functionaryId: $stateParams.functionaryId
 			});
+			$scope.setComboValues();
 		};
-
-
-
-
 	}
 ]);

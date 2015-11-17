@@ -14,6 +14,10 @@ module.exports = function(app) {
 		.put(users.requiresLogin, functionaryResumeEducations.hasAuthorization, functionaryResumeEducations.update)
 		.delete(users.requiresLogin, functionaryResumeEducations.hasAuthorization, functionaryResumeEducations.delete);
 
+	/*app.route('/functionary-resume-educations/:functionary')
+		.get(functionaryResumeEducations.read);*/
+
 	// Finish by binding the Functionary resume education middleware
 	app.param('functionaryResumeEducationId', functionaryResumeEducations.functionaryResumeEducationByID);
+	//app.param('functionary', functionaryResumeEducations.educationByFunctionary);
 };

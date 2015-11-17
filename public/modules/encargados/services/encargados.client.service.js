@@ -23,3 +23,35 @@ angular.module('encargados').factory('GetEncargado', ['$resource',
     }
 ]);
 
+angular.module('encargados').service('Utility', [
+    function() {
+        //Generates a list of years from a static start Year to the Current Year.
+        this.getRelationshipList = function() {
+            return [{relationship: 'Padre'}, {relationship: 'Madre'}, {relationship: 'Encargado Legal'}];
+        };
+    }
+]);
+
+
+/*angular.module('encargados',['estudiantes']).factory('getEstudiante', ['$resource',
+    function($resource) {
+        return{
+            get:function(){
+                return passEstudiante.get()
+            }
+        }
+    }
+]);*/
+
+/*angular.module('encargados').factory('moveEstudiante', function(){
+    estudiante = '';
+    return{
+        set:function(cedula){
+            return estudiante = cedula;
+        },
+        get:function(){
+            return estudiante;
+        }
+    }
+
+});*/

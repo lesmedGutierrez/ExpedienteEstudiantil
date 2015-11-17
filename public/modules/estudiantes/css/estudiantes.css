@@ -10,7 +10,7 @@
 }
 
 .no-margin-bottom{
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .full-width{
@@ -48,7 +48,7 @@
 .checkbox.checked {
     border-top: none;
     border-left: none;
-    top: 0px;
+    top: 0;
     left: 6px;
     width: 30px;
     height: 30px;
@@ -74,6 +74,11 @@
     width: 800px;
 }
 
+.ngGridNotesSON{
+    height: 275px;
+    width: 827px;
+}
+
 .nota-header{
     padding-top: 5px;
     height: 30px;
@@ -89,6 +94,15 @@
 
 .nota-decimo-header{
     margin-left: 503px;
+}
+.nota-noveno-header{
+    margin-left: 590px;
+    width: 252px;
+}
+
+.nota-noveno-view-header{
+    margin-left: 575px;
+    width: 252px;
 }
 
 .nota-promedio-anual-column{

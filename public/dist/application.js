@@ -56,6 +56,7 @@ ApplicationConfiguration.registerModule('estudiantes');
 'use strict';
 
 // Use applicaion configuration module to register a new module
+
 ApplicationConfiguration.registerModule('functionaries');
 'use strict';
 
@@ -72,6 +73,7 @@ ApplicationConfiguration.registerModule('functionary-resume-languages');
 'use strict';
 
 // Use applicaion configuration module to register a new module
+
 ApplicationConfiguration.registerModule('logros-academicos');
 'use strict';
 
@@ -291,7 +293,6 @@ angular.module('core').service('Menus', [
 	}
 ]);
 'use strict';
-
 angular.module('core').service('Utility', [
 
 	function() {
@@ -329,7 +330,6 @@ angular.module('core').service('Utility', [
 ]);
 
 'use strict';
-
 // Configuring the Articles module
 angular.module('encargados').run(['Menus',
 	function(Menus) {
@@ -369,12 +369,14 @@ angular.module('encargados').config(['$stateProvider',
 // Encargados controller
 angular.module('encargados').controller('EncargadosController', ['$scope', '$stateParams', '$location', 'Authentication', 'Encargados','GetEncargado',
 	function($scope, $stateParams, $location, Authentication, Encargados, GetEncargado) {
+
 		$scope.authentication = Authentication;
         $scope.estudiante = '';
         $scope.name = '';
         $scope.primer_apellido = '';
         $scope.segundo_apellido = '';
         $scope.cedula = '';
+        $scope.parentesco = '';
         $scope.ocupacion = '';
         $scope.estado_civil = '';
         $scope.nacionalidad = '';
@@ -398,6 +400,7 @@ angular.module('encargados').controller('EncargadosController', ['$scope', '$sta
                 primer_apellido:$scope.primer_apellido,
                 segundo_apellido: $scope.segundo_apellido,
                 cedula: $scope.cedula,
+                parentesco: $scope.parentesco.relationship,
                 ocupacion: $scope.ocupacion,
                 estado_civil: $scope.estado_civil,
                 nacionalidad: $scope.nacionalidad,
@@ -431,9 +434,8 @@ angular.module('encargados').controller('EncargadosController', ['$scope', '$sta
 
 		// Remove existing Encargado
 		$scope.remove = function(encargado) {
-			if ( encargado ) { 
+			if ( encargado ) {
 				encargado.$remove();
-
 				for (var i in $scope.encargados) {
 					if ($scope.encargados [i] === encargado) {
 						$scope.encargados.splice(i, 1);
@@ -450,6 +452,7 @@ angular.module('encargados').controller('EncargadosController', ['$scope', '$sta
 		// Update existing Encargado
 		$scope.update = function() {
 			var encargado = $scope.encargado;
+            encargado.parentesco = $scope.parentesco.relationship;
             //encargado.responsable = $scope.eleccion.opcion;
 			encargado.$update(function() {
 				//$location.path('encargados/' + encargado._id);
@@ -476,10 +479,31 @@ angular.module('encargados').controller('EncargadosController', ['$scope', '$sta
 		$scope.findOne = function() {
             $scope.cedulaEstudianteUrl = $stateParams.cedulaEstudiante;
             $scope.idEstudianteUrl = $stateParams.estudianteId;
-			$scope.encargado = Encargados.get({ 
+			$scope.encargado = Encargados.get({
 				encargadoId: $stateParams.encargadoId
 			});
+
+            $scope.encargado.$promise.then(function(estudiante) {
+                $scope.parentesco = $scope.setParentescoComboBox(estudiante.parentesco);
+            });
 		};
+
+        $scope.relationshipStudentList = Utility.getRelationshipList();
+        $scope.parentesco = $scope.relationshipStudentList[0];
+
+        $scope.setParentescoComboBox = function(parentesco){
+            for(var i = 0; i < $scope.relationshipStudentList.length; i++){
+                if ($scope.relationshipStudentList[i].relationship === parentesco){
+                    return $scope.relationshipStudentList[i];
+                }
+            }
+        };
+       /* $scope.isResponsable = function(value) {
+            if (value === true)
+                $scope.responsableS = 'Si'
+            else
+                $scope.responsableS = 'No'
+        };*/
 	}
 ]);
 
@@ -507,8 +531,38 @@ angular.module('encargados').factory('GetEncargado', ['$resource',
         });
     }
 ]);
+angular.module('encargados').service('Utility', [
+    function() {
+        //Generates a list of years from a static start Year to the Current Year.
+        this.getRelationshipList = function() {
+            return [{relationship: 'Padre'}, {relationship: 'Madre'}, {relationship: 'Encargado Legal'}];
+        };
+    }
+]);
 
 
+/*angular.module('encargados',['estudiantes']).factory('getEstudiante', ['$resource',
+    function($resource) {
+        return{
+            get:function(){
+                return passEstudiante.get()
+            }
+        }
+    }
+]);*/
+
+/*angular.module('encargados').factory('moveEstudiante', function(){
+    estudiante = '';
+    return{
+        set:function(cedula){
+            return estudiante = cedula;
+        },
+        get:function(){
+            return estudiante;
+        }
+    }
+
+});*/
 'use strict';
 
 // Configuring the Articles module
@@ -574,14 +628,16 @@ angular.module('estudiantes').config(['$stateProvider',
 angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$stateParams', '$location', '$filter', '$http', '$sce', 'Authentication', 'Estudiantes', '$upload', 'Notas', 'GetNotas', 'GetAdmitidos', 'Decimo', 'Undecimo', 'Nacionalidad', 'Reports',
 	function($scope, $stateParams, $location, $filter, $http, $sce, Authentication, Estudiantes, $upload, Notas, GetNotas, GetAdmitidos, Decimo, Undecimo, Nacionalidad, Reports) {
 		$scope.authentication = Authentication;
-
         $scope.options = $http.get('codigo-postal.json').then(function(data){
             $scope.options = data.data;
             $scope.provincia = $scope.options[0];
             $scope.canton =  $scope.provincia.cantones[0];
             $scope.distrito = $scope.canton.distritos[0];
         });
-
+        $scope.high_schools_list = $http.get('colegios-procedencia.json').then(function(data){
+            $scope.high_schools_list = data.data;
+            $scope.colegio_procedencia = $scope.high_schools_list[0];
+        });
         $scope.sexos = [{nombre: 'Masculino'}, {nombre: 'Femenino'}];
         $scope.adecuaciones = [{nombre: 'Tiene'}, {nombre: 'No tiene'}];
         $scope.consultas = [{nombre: 'Nombre'}, {nombre: 'Cedula'}, {nombre: 'Colegio de Procedencia'}];
@@ -603,9 +659,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
         $scope.selected_inf_hogar = [];
         $scope.selected_vacunas = [];
         $scope.anno_ingreso = 0;
-
-
-
         $scope.provincia_change = function() {
             $scope.canton =  $scope.provincia.cantones[0];
             $scope.distrito = $scope.canton.distritos[0];
@@ -645,9 +698,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             }
 
         });
-
-
-
 		// Create new Estudiante
 		$scope.create = function() {
             //Uploads photo
@@ -668,16 +718,14 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 /*if($scope.anno_ingreso < new Date().getFullYear()-1){
                     gr = 1;
                 }*/
-                graduado = $scope.graduado
+                graduado = $scope.graduado;
                 var admitido = 0;
                 /*if($scope.anno_ingreso < new Date().getFullYear()){
                     admitido = 1;
                 }*/
 
                 if ($scope.anno_ingreso>new Date().getFullYear()) {
-
                     $scope.anno_ingreso_error = true
-
                     return
                 }
                 admitido = $scope.anno_ingreso
@@ -726,13 +774,21 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             anno: estudiante.anno_ingreso-2,
                             semestre: 0
                         });
-                        var notaN = new Notas ({
+                        var notaNPT = new Notas ({
                             cedula_estudiante: $scope.nacionalidad,
                             grado: 'noveno',
                             curso: $scope.notas_setimo_octavo_noveno[i].curso,
-                            nota: $scope.notas_setimo_octavo_noveno[i].nota_noveno,
+                            nota: $scope.notas_setimo_octavo_noveno[i].nota_noveno_primer_trimestre,
                             anno: estudiante.anno_ingreso-1,
-                            semestre: 0
+                            semestre: 1
+                        });
+                        var notaNST = new Notas ({
+                            cedula_estudiante: $scope.nacionalidad,
+                            grado: 'noveno',
+                            curso: $scope.notas_setimo_octavo_noveno[i].curso,
+                            nota: $scope.notas_setimo_octavo_noveno[i].nota_noveno_segundo_trimestre,
+                            anno: estudiante.anno_ingreso-1,
+                            semestre: 2
                         });
                         notaS.$save(function(response) {
                         }, function(errorResponse) {
@@ -742,7 +798,11 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                         }, function(errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
-                        notaN.$save(function(response) {
+                        notaNPT.$save(function(response) {
+                        }, function(errorResponse) {
+                            $scope.error = errorResponse.data.message;
+                        });
+                        notaNST.$save(function(response) {
                         }, function(errorResponse) {
                             $scope.error = errorResponse.data.message;
                         });
@@ -801,7 +861,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                     // Clear form fields
                 }, function(errorResponse) {
                     $scope.error = errorResponse.data.message;
-
                 });
             }
 		};
@@ -863,6 +922,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             estudiante.provincia = $scope.provincia.nombre;
             estudiante.canton = $scope.canton.nombre;
             estudiante.distrito = $scope.distrito.nombre;
+            estudiante.colegio_procedencia = $scope.colegio_procedencia.name;
             estudiante.$update(function() {
                 $location.path('estudiantes/' + estudiante._id);
             }, function(errorResponse) {
@@ -878,7 +938,12 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                         nota.nota = $scope.notas_setimo_octavo_noveno[i].nota_octavo;
                     }
                     else if((nota.grado === 'noveno')&&($scope.notas_setimo_octavo_noveno[i].curso===nota.curso)){
-                        nota.nota = $scope.notas_setimo_octavo_noveno[i].nota_noveno;
+                        if(nota.semestre === 1){
+                            nota.nota = $scope.notas_setimo_octavo_noveno[i].nota_noveno_primer_trimestre;
+                        }
+                        else if(nota.semestre === 2){
+                            nota.nota = $scope.notas_setimo_octavo_noveno[i].nota_noveno_segundo_trimestre;
+                        }
                     }
                 }
                 Notas.update({ notaId: nota._id }, nota);
@@ -910,7 +975,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             $scope.estudiante.$promise.then(function(estudiante) {
                 $scope.sexo = $scope.sexos[$scope.find($scope.sexos, $scope.estudiante.sexo, 0)];
                 if(edit){
-
                     if($scope.adecuaciones[0].nombre === $scope.estudiante.adecuacion_sig){
                         $scope.adSignificativa = $scope.adecuaciones[0];
                     }
@@ -928,7 +992,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                     $scope.provincia = $scope.options[arr[0]];
                     $scope.canton = $scope.options[arr[0]].cantones[arr[1]];
                     $scope.distrito = $scope.options[arr[0]].cantones[arr[1]].distritos[arr[2]];
-
+                    $scope.colegio_procedencia = $scope.setColegioProcedenciaComboBox($scope.estudiante.colegio_procedencia);
                 }
                 $scope.notas = GetNotas.query({
                     cedula_estudiante: estudiante.nacionalidad
@@ -943,7 +1007,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             temporalNoteRegister.push({materia: nota.curso, grado: nota.grado, calificacion: nota.nota});
                         }
                         else if(nota.grado==='noveno'){
-                            temporalNoteRegister.push({materia: nota.curso, grado: nota.grado, calificacion: nota.nota});
+                            temporalNoteRegister.push({materia: nota.curso, grado: nota.grado, calificacion: nota.nota, semestre: nota.semestre});
                         }
                     });
                     var cursos_checked = [];
@@ -951,7 +1015,8 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                         var curso = temporalNoteRegister[i].materia;
                         var setimo = 0;
                         var octavo = 0;
-                        var noveno = 0;
+                        var noveno_primer_trimestre = 0;
+                        var noveno_segundo_trimestre = 0;
                         if(cursos_checked.indexOf(curso) === -1){
                             for (var j = 0; j < temporalNoteRegister.length; j++){
                                 if (temporalNoteRegister[j].materia === curso){
@@ -962,7 +1027,12 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                                         octavo = temporalNoteRegister[j].calificacion;
                                     }
                                     else if(temporalNoteRegister[j].grado === 'noveno'){
-                                        noveno = temporalNoteRegister[j].calificacion;
+                                        if(temporalNoteRegister[j].semestre === 1){
+                                            noveno_primer_trimestre = temporalNoteRegister[j].calificacion;
+                                        }
+                                        else if (temporalNoteRegister[j].semestre === 2){
+                                            noveno_segundo_trimestre = temporalNoteRegister[j].calificacion;
+                                        }
                                     }
                                 }
                             }
@@ -1027,26 +1097,33 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 }
             }
         };
-
+        $scope.setColegioProcedenciaComboBox = function(colegio){
+            for(var i = 0; i < $scope.high_schools_list.length; i++){
+                if ($scope.high_schools_list[i].name === colegio){
+                    return $scope.high_schools_list[i];
+                }
+            }
+        };
         //Notas de los cursos
         $scope.initNotas = function(){
             var estudiante = $scope.estudiante;
             $scope.editable = true;
             $scope.notas_setimo_octavo_noveno = [
-                {curso: 'Inglés', nota_setimo: 0, nota_octavo: 0 , nota_noveno: 0},
-                {curso: 'Matemática', nota_setimo: 0, nota_octavo: 0, nota_noveno: 0},
-                {curso: 'Ciencias', nota_setimo: 0, nota_octavo: 0, nota_noveno: 0},
-                {curso: 'Cívica', nota_setimo: 0, nota_octavo: 0, nota_noveno: 0},
-                {curso: 'Español', nota_setimo: 0, nota_octavo: 0, nota_noveno: 0},
-                {curso: 'Estudios Sociales', nota_setimo: 0, nota_octavo: 0, nota_noveno: 0},
-                {curso: 'Conducta', nota_setimo: 0, nota_octavo: 0, nota_noveno: 0}];
+                {curso: 'Inglés', nota_setimo: 0, nota_octavo: 0 , nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Matemática', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Ciencias', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Cívica', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Español', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Estudios Sociales', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Conducta', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0},
+                {curso: 'Promedio', nota_setimo: 0, nota_octavo: 0, nota_noveno_primer_trimestre: 0, nota_noveno_segundo_trimestre: 0}];
             $scope.notas_decimo_undecimo = [
                 {curso: 'Español', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Matemáticas', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Física', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Química', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Biología', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
-                {curso: 'Bioteclogía', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
+                {curso: 'Biotecnología', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Computación', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Robótica', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
                 {curso: 'Dibujo Técnico', nota_decimo_primer_semestre: 0, nota_decimo_segundo_semestre: 0, nota_undecimo_primer_semestre: 0, nota_undecimo_segundo_semestre: 0},
@@ -1073,29 +1150,33 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
 
         $scope.getGridOptionsNotasSON = function(data){
             var editCellTemplate = '<input type="number" ng-class="\'colt\' + col.index"  min="1" max="100" ng-input="COL_FIELD" ng-model="COL_FIELD" >';
-            var width = 120;
+            var width = 125;
             return {
                 data: data,
                 enableCellSelection: true,
                 enableRowSelection: false,
                 enableCellEditOnFocus: $scope.editable,
-                columnDefs: [{field: 'curso', displayName: 'Curso', enableCellEdit: false},
-                    {
-                        field: 'nota_setimo', displayName: 'Nota de setimo', enableCellEdit: $scope.editable,
+                columnDefs: [{field: 'curso', displayName: 'Asignatura', enableCellEdit: false},
+                    {field: 'nota_setimo', displayName: 'Notas de sétimo', enableCellEdit: $scope.editable,
                         editableCellTemplate: editCellTemplate,
                         cellClass: 'grid-align',
                         width: width,
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_setimo\') <65 && row.getProperty(\'nota_setimo\') != 0,   \'green\' : row.getProperty(\'nota_setimo\') >=65 && row.getProperty(\'nota_setimo\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
-                    {field:'nota_octavo', displayName:'Nota de octavo', enableCellEdit: $scope.editable,
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_setimo\') < 70 && row.getProperty(\'nota_setimo\') != 0, \'yellow\' : row.getProperty(\'nota_setimo\') >= 70 && row.getProperty(\'nota_setimo\') < 85  && row.getProperty(\'nota_setimo\') != 0, \'green\' : row.getProperty(\'nota_setimo\') >=85 && row.getProperty(\'nota_setimo\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+                    {field:'nota_octavo', displayName:'Notas de octavo', enableCellEdit: $scope.editable,
                         editableCellTemplate: editCellTemplate,
                         cellClass: 'grid-align',
                         width: width,
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_octavo\') <65 && row.getProperty(\'nota_octavo\') != 0,   \'green\' : row.getProperty(\'nota_octavo\') >=65 && row.getProperty(\'nota_octavo\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
-                    {field:'nota_noveno', displayName:'Nota de noveno', enableCellEdit: $scope.editable,
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_octavo\') < 70 && row.getProperty(\'nota_octavo\') != 0, \'yellow\' : row.getProperty(\'nota_octavo\') >= 70 && row.getProperty(\'nota_octavo\') < 85  && row.getProperty(\'nota_octavo\') != 0, \'green\' : row.getProperty(\'nota_octavo\') >=85 && row.getProperty(\'nota_octavo\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+                    {field:'nota_noveno_primer_trimestre', displayName:'I Trimestre', enableCellEdit: $scope.editable,
                         editableCellTemplate: editCellTemplate,
                         cellClass: 'grid-align',
                         width: width,
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_noveno\') <65 && row.getProperty(\'nota_noveno\') != 0,   \'green\' : row.getProperty(\'nota_noveno\') >=65 && row.getProperty(\'nota_noveno\') != 0  }">{{ row.getProperty(col.field) }}</div>'}]
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_noveno_primer_trimestre\') < 70 && row.getProperty(\'nota_noveno_primer_trimestre\') != 0, \'yellow\' : row.getProperty(\'nota_noveno_primer_trimestre\') >= 70 && row.getProperty(\'nota_noveno_primer_trimestre\') < 85  && row.getProperty(\'nota_noveno_primer_trimestre\') != 0, \'green\' : row.getProperty(\'nota_noveno_primer_trimestre\') >=85 && row.getProperty(\'nota_noveno_primer_trimestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+                    {field:'nota_noveno_segundo_trimestre', displayName:'II Trimestre', enableCellEdit: $scope.editable,
+                        editableCellTemplate: editCellTemplate,
+                        cellClass: 'grid-align',
+                        width: width,
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_noveno_segundo_trimestre\') < 70 && row.getProperty(\'nota_noveno_segundo_trimestre\') != 0, \'yellow\' : row.getProperty(\'nota_noveno_segundo_trimestre\') >= 70 && row.getProperty(\'nota_noveno_segundo_trimestre\') < 85  && row.getProperty(\'nota_noveno_segundo_trimestre\') != 0, \'green\' : row.getProperty(\'nota_noveno_segundo_trimestre\') >=85 && row.getProperty(\'nota_noveno_segundo_trimestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'}]
             };
         };
 
@@ -1106,27 +1187,28 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 enableCellSelection: true,
                 enableRowSelection: false,
                 enableCellEditOnFocus: $scope.editable,
-                columnDefs: [{field: 'curso', displayName: 'Curso', enableCellEdit: false},
+                columnDefs: [{field: 'curso', displayName: 'Asignatura', enableCellEdit: false},
                     {field:'nota_decimo_primer_semestre', displayName:'I', enableCellEdit: $scope.editable,
                         width: width,
                         cellClass: 'grid-align',
                         editableCellTemplate:'<input type="number" ng-class="\'colt\' + col.index"  min="1" max="100" ng-input="COL_FIELD" ng-model="COL_FIELD" >',
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_decimo_primer_semestre\') <65 && row.getProperty(\'nota_decimo_primer_semestre\') != 0,   \'green\' : row.getProperty(\'nota_decimo_primer_semestre\') >=65 && row.getProperty(\'nota_decimo_primer_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_decimo_primer_semestre\') <70 && row.getProperty(\'nota_decimo_primer_semestre\') != 0,   \'green\' : row.getProperty(\'nota_decimo_primer_semestre\') >=70 && row.getProperty(\'nota_decimo_primer_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+
                     {field:'nota_decimo_segundo_semestre', displayName:'II', enableCellEdit: $scope.editable,
                         width: width,
                         cellClass: 'grid-align',
                         editableCellTemplate:'<input type="number" ng-class="\'colt\' + col.index"  min="1" max="100" ng-input="COL_FIELD" ng-model="COL_FIELD" >',
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_decimo_segundo_semestre\') <65 && row.getProperty(\'nota_decimo_segundo_semestre\') != 0,   \'green\' : row.getProperty(\'nota_decimo_segundo_semestre\') >=65 && row.getProperty(\'nota_decimo_segundo_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_decimo_segundo_semestre\') <70 && row.getProperty(\'nota_decimo_segundo_semestre\') != 0,   \'green\' : row.getProperty(\'nota_decimo_segundo_semestre\') >=70 && row.getProperty(\'nota_decimo_segundo_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
                     {field:'nota_undecimo_primer_semestre', displayName:'I', enableCellEdit: $scope.editable,
                         width: width,
                         cellClass: 'grid-align',
                         editableCellTemplate:'<input type="number" ng-class="\'colt\' + col.index"  min="1" max="100" ng-input="COL_FIELD" ng-model="COL_FIELD" >',
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_undecimo_primer_semestre\') <65 && row.getProperty(\'nota_undecimo_primer_semestre\') != 0,   \'green\' : row.getProperty(\'nota_undecimo_primer_semestre\') >=65 && row.getProperty(\'nota_undecimo_primer_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
+                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_undecimo_primer_semestre\') <70 && row.getProperty(\'nota_undecimo_primer_semestre\') != 0,   \'green\' : row.getProperty(\'nota_undecimo_primer_semestre\') >=70 && row.getProperty(\'nota_undecimo_primer_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'},
                     {field:'nota_undecimo_segundo_semestre', displayName:'II', enableCellEdit: $scope.editable,
                         width: width,
                         cellClass: 'grid-align',
                         editableCellTemplate:'<input type="number" ng-class="\'colt\' + col.index"  min="1" max="100" ng-input="COL_FIELD" ng-model="COL_FIELD" >',
-                        cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_undecimo_segundo_semestre\') <65 && row.getProperty(\'nota_undecimo_segundo_semestre\') != 0,   \'green\' : row.getProperty(\'nota_undecimo_segundo_semestre\') >=65 && row.getProperty(\'nota_undecimo_segundo_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'}]
+             cellTemplate:'<div class="ngCellText" ng-class="{\'red\' : row.getProperty(\'nota_undecimo_segundo_semestre\') <70 && row.getProperty(\'nota_undecimo_segundo_semestre\') != 0,   \'green\' : row.getProperty(\'nota_undecimo_segundo_semestre\') >=70 && row.getProperty(\'nota_undecimo_segundo_semestre\') != 0  }">{{ row.getProperty(col.field) }}</div>'}]
             };
         };
 
@@ -1187,7 +1269,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                                         else{
                                             promedio_undecimo += temporalNoteRegister[j].calificacion;
                                         }
-                                        console.log(promedio_decimo + ' - ' + promedio_undecimo);
                                     }
                                 }
                             }
@@ -1196,8 +1277,6 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                                                                     nota_undecimo_primer_semestre: undecimo_primer_semestre, nota_undecimo_segundo_semestre: undecimo_segundo_semestre});
                         }
                     }
-                    $scope.tenth_annual_average = promedio_decimo/2;
-                    $scope.eleventh_annual_average = promedio_undecimo/2;
                 }, function (error) {
                     console.log('Failed: ' + error);
                 });
@@ -1233,7 +1312,35 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                 };
             }
         };
+        $scope.calcularPromedio = function(){
+            var promedio_decimo_primer_semestre = 0;
+            var promedio_decimo_segundo_semestre = 0;
+            var promedio_undecimo_primer_semestre = 0;
+            var promedio_undecimo_segundo_semestre = 0;
+            var promedio_row = 0;
+            angular.forEach($scope.notas_decimo_undecimo, function(nota){
+                if(nota.curso !== 'Promedio') {
+                    promedio_decimo_primer_semestre += nota.nota_decimo_primer_semestre;
+                    promedio_decimo_segundo_semestre += nota.nota_decimo_segundo_semestre;
+                    promedio_undecimo_primer_semestre += nota.nota_undecimo_primer_semestre;
+                    promedio_undecimo_segundo_semestre += nota.nota_undecimo_segundo_semestre;
+                }
+                else if(nota.curso === 'Promedio'){
+                    promedio_row = nota;
+                }
+            });
+            promedio_decimo_primer_semestre = Math.round(promedio_decimo_primer_semestre/($scope.notas_decimo_undecimo.length-1) * 100) / 100;
+            promedio_decimo_segundo_semestre = Math.round(promedio_decimo_segundo_semestre/($scope.notas_decimo_undecimo.length-1) * 100) / 100;
+            promedio_undecimo_primer_semestre = Math.round(promedio_undecimo_primer_semestre/($scope.notas_decimo_undecimo.length-1) * 100) / 100;
+            promedio_undecimo_segundo_semestre = Math.round(promedio_undecimo_segundo_semestre/($scope.notas_decimo_undecimo.length-1) * 100) / 100;
+            promedio_row.nota_decimo_primer_semestre = promedio_decimo_primer_semestre;
+            promedio_row.nota_decimo_segundo_semestre = promedio_decimo_segundo_semestre;
+            promedio_row.nota_undecimo_primer_semestre = promedio_undecimo_primer_semestre;
+            promedio_row.nota_undecimo_segundo_semestre = promedio_undecimo_segundo_semestre;
+            $scope.tenth_annual_average = Math.round((promedio_decimo_primer_semestre + promedio_decimo_segundo_semestre)/2* 100) / 100;;
+            $scope.eleventh_annual_average = Math.round((promedio_undecimo_primer_semestre + promedio_undecimo_segundo_semestre)/2* 100) / 100;;
 
+        };
         $scope.matricular = function(){
             var estudiantes = $scope.estudiantes;
             angular.forEach(estudiantes, function (estudiante) {
@@ -1482,7 +1589,7 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                     $scope.visibl = true;
                     $scope.show = false;
                 }
-                if (pdfReport != null){
+                if (pdfReport !== undefined){
                     if (pdfReport['Data'].length > 0){
                         $scope.generatePDF(pdfReport);
                     }
@@ -1500,20 +1607,20 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
             var logo_img = document.getElementById('cc-logo');
             var img_data = getBase64Image(logo_img);
             doc.addImage(img_data, 'JPEG',15,15,25,25);
-            doc.text(40, 19, PDFReport['Header']);
-            doc.text(15, 80, PDFReport['Title']);
-            doc.autoTable(PDFReport['Columns'], PDFReport['Data'], {margins: {right: 10, left: 10, top: 100, bottom: 100}, startY: PDFReport['StartY']});
+            doc.text(40, 19, PDFReport.Header);
+            doc.text(15, 80, PDFReport.Title);
+            doc.autoTable(PDFReport.Columns, PDFReport.Data, {margins: {right: 10, left: 10, top: 100, bottom: 100}, startY: PDFReport.StartY});
             $scope.base64 = $sce.trustAsResourceUrl('data:application/pdf;base64,' + btoa(doc.output()));
         };
         $scope.reporte_notas = function(){
-            if($scope.ced_estudiante != undefined && $scope.ced_estudiante != ''){
+            if($scope.ced_estudiante !== undefined && $scope.ced_estudiante !== ''){
                 var serviceReport = Reports;
                 serviceReport.studentNotes = GetNotas.query({ cedula_estudiante: $scope.ced_estudiante });
                 serviceReport.studentNotes.$promise.then(function(notes){
                     var pdfReport;
                     $scope.estudiante =  Nacionalidad.query( {cedula: $scope.ced_estudiante });
                     $scope.estudiante.$promise.then(function(student){
-                        if (student[0] != undefined){
+                        if (student[0] !== undefined){
                             fixInvalidCharactersfixInvalidCharacters(notes);
                             pdfReport = serviceReport.notesReport(notes, student);
                             var doc = new jsPDF('p', 'pt');
@@ -1522,23 +1629,23 @@ angular.module('estudiantes').controller('EstudiantesController', ['$scope', '$s
                             var img_data = getBase64Image(logo_img);
                             doc.addImage(img_data, 'JPEG',15,15,25,25);
                             var infoestudiante = 'Cedula: ' + student[0].nacionalidad +'\nNombre del Alumno: '+ student[0].segundo_apellido + ' ' + student[0].primer_apellido + ' ' + student[0].name;
-                            doc.text(40, 19, pdfReport['Header']);
-                            doc.text(120, 60, pdfReport['Title'] + ' Decimo ' + student[0].anno_ingreso);
+                            doc.text(40, 19, pdfReport.Header);
+                            doc.text(120, 60, pdfReport.Title + ' Decimo ' + student[0].anno_ingreso);
                             doc.text(15, 90, infoestudiante);
                             doc.setFontSize(10);
                             doc.text(327, 140, 'Ausencias I Semestre              Ausencias II Semestre');
-                            doc.autoTable(pdfReport['Columns'], pdfReport['Data'][0], {margins: {right: 10, left: 10, top: 40, bottom: 40}, startY: 150});
+                            doc.autoTable(pdfReport.Columns, pdfReport.Data[0], {margins: {right: 10, left: 10, top: 40, bottom: 40}, startY: 150});
                             if (student[0].anno_ingreso < new Date().getFullYear()){
                                 doc.addPage();
                                 doc.setFontSize(16);
                                 doc.addImage(img_data, 'JPEG',15,15,25,25);
                                 infoestudiante = 'Cédula: ' + $scope.ced_estudiante +'\nNombre del Alumno: '+ student[0].segundo_apellido + ' ' + student[0].primer_apellido + ' ' + student[0].name;
-                                doc.text(40, 19, pdfReport['Header']);
-                                doc.text(120, 60, pdfReport['Title'] + ' Undecimo ' + (student[0].anno_ingreso+1));
+                                doc.text(40, 19, pdfReport.Header);
+                                doc.text(120, 60, pdfReport.Title + ' Undecimo ' + (student[0].anno_ingreso+1));
                                 doc.text(15, 90, infoestudiante);
                                 doc.setFontSize(10);
                                 doc.text(327, 140, 'Ausencias I Semestre              Ausencias II Semestre');
-                                doc.autoTable(pdfReport['Columns'], pdfReport['Data'][1], {margins: {right: 10, left: 10, top: 40, bottom: 40}, startY: 150});
+                                doc.autoTable(pdfReport.Columns, pdfReport.Data[1], {margins: {right: 10, left: 10, top: 40, bottom: 40}, startY: 150});
                             }
                             $scope.base64 = $sce.trustAsResourceUrl('data:application/pdf;base64,' + btoa(doc.output()));
                         }
@@ -1584,7 +1691,7 @@ function fixInvalidCharactersfixInvalidCharacters(noteList){
 
 function getBase64Image(img) {
     var canvas = document.createElement("canvas");
-    if (img != undefined) {
+    if (img !== undefined) {
         canvas.width = img.width;
         canvas.height = img.height;
         var ctx = canvas.getContext("2d");
@@ -1682,8 +1789,8 @@ angular.module('estudiantes').factory('Nacionalidad', ['$resource',
 
 
 angular.module('estudiantes').factory('Reports', function(){
-        var HEADER = "";
-        var TITLE = "";
+        var HEADER = '';
+        var TITLE = '';
         var columns = [];
         var data = [];
 
@@ -1743,7 +1850,6 @@ angular.module('estudiantes').factory('Reports', function(){
                 var result = this.getJSONFromData(HEADER, TITLE, columns, data, 70);
                 return result;
             },
-
             scienceForBachelorListReport: function (estudiantes, grade_label) {
                 data = [];
                 TITLE = '      LISTA CIENCIA PARA BACHILLERATO ' + grade_label + ' '  + new Date().getFullYear() +'\n';
@@ -1774,7 +1880,11 @@ angular.module('estudiantes').factory('Reports', function(){
 
             emailListReport: function(estudiantes) {
                 data = [];
+<<<<<<< HEAD
                 'Colegio Cientifico de Costa Rica\n' +
+=======
+                HEADER = 'Colegio Cientifico de Costa Rica\n' +
+>>>>>>> development_3
                 'Instituto Tecnologico de Costa Rica, Sede Regional San Carlos\n' +
                 'Telefax: 2475-7089,Tel: 2401-3122\n';
                 TITLE = '';
@@ -2009,7 +2119,11 @@ angular.module('estudiantes').factory('Reports', function(){
                 return header;
             },
             getJSONFromData: function (header, title, columns, data, startY){
+<<<<<<< HEAD
                 return {"Header": header, "Title": title, "Columns":columns, "Data": data, "StartY": startY};
+=======
+                return {'Header': header, 'Title': title, 'Columns':columns, 'Data': data, 'StartY': startY};
+>>>>>>> development_3
             },
        };
         return report;
@@ -2019,6 +2133,7 @@ angular.module('estudiantes').factory('Reports', function(){
 
 'use strict';
 
+<<<<<<< HEAD
 // Configuring the Articles module
 angular.module('functionaries').run(['Menus',
 	function(Menus) {
@@ -2686,6 +2801,8 @@ angular.module('functionary-resume-languages').factory('FunctionaryResumeLanguag
 ]);
 'use strict';
 
+=======
+>>>>>>> development_3
 //Setting up route
 angular.module('logros-academicos').config(['$stateProvider',
 	function($stateProvider) {
